@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate your brain</title>
+    <link rel="icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1386371599136985190/1513265145831227402/apple-touch-icon.png?ex=6a27197d&is=6a25c7fd&hm=ebc21587a3ca9c41aa8b1d7f3f27386318b21d9ab3ecb9f91cb583cd9064b435&=&format=webp&quality=lossless">
+    <style>
+
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #141b2d;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #f43f5e;
+            --accent-glow: rgba(244, 63, 94, 0.15);
+            --success: #10b981;
+            --border: #222f47;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 60px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+            body.lang-fr .en {
+                display: none !important;
+            }
+
+            body.lang-en .fr {
+                display: none !important;
+            }
+
+        .lang-switcher {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 8px 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 38px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+            .lang-switcher:hover {
+                max-height: 110px;
+                border-color: var(--accent);
+                border-radius: 16px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            }
+
+        .lang-current {
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            height: 20px;
+        }
+
+            .lang-current::after {
+                content: '▼';
+                font-size: 0.6rem;
+                color: var(--text-muted);
+                transition: transform 0.3s;
+                margin-left: 4px;
+            }
+
+        .lang-switcher:hover .lang-current::after {
+            transform: rotate(180deg);
+        }
+
+        .lang-options {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .lang-opt {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 2px 0;
+            transition: color 0.2s;
+            text-align: left;
+        }
+
+            .lang-opt:hover {
+                color: var(--accent);
+            }
+
+        .container {
+            max-width: 680px;
+            width: 100%;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--accent-glow);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+            border: 1px solid var(--accent);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+            .subtitle strong {
+                color: var(--text-main);
+                font-weight: 600;
+            }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        ol {
+            list-style-type: none;
+        }
+
+        li {
+            margin-bottom: 24px;
+            color: var(--text-muted);
+            position: relative;
+            padding-left: 20px;
+        }
+
+            li::before {
+                content: "•";
+                color: var(--accent);
+                font-weight: bold;
+                display: inline-block;
+                width: 1em;
+                margin-left: -1em;
+                position: absolute;
+                left: 20px;
+            }
+
+            li strong {
+                color: var(--text-main);
+                display: block;
+                font-size: 1.1rem;
+                margin-bottom: 6px;
+            }
+
+        .example-box {
+            background-color: rgba(255, 255, 255, 0.02);
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+
+            .example-box.bad {
+                border-left-color: #ef4444;
+                background-color: rgba(239, 68, 68, 0.03);
+            }
+
+            .example-box.good {
+                border-left-color: var(--success);
+                background-color: rgba(16, 185, 129, 0.03);
+            }
+
+        .chat-line {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+            .chat-line:last-child {
+                margin-bottom: 0;
+            }
+
+            .chat-line .user {
+                font-weight: bold;
+                color: #60a5fa;
+            }
+
+            .chat-line .msg {
+                color: #cbd5e1;
+            }
+
+        .share-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        .share-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        .copy-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .copy-url {
+            font-family: ui-monospace, monospace;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 12px;
+        }
+
+        .copy-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+            .copy-btn:hover {
+                background: #e11d48;
+            }
+
+            .copy-btn:active {
+                transform: scale(0.98);
+            }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 90px 16px 40px 16px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 24px 16px;
+            }
+
+            .lang-switcher {
+                top: 16px;
+                right: 16px;
+            }
+        }
+    </style>
+</head>
+<body class="lang-fr">
+
+<div class="lang-switcher">
+    <div class="lang-current" id="currentLang">🌐 FR</div>
+    <div class="lang-options">
+        <div class="lang-opt" onclick="setLanguage('fr')">Français</div>
+        <div class="lang-opt" onclick="setLanguage('en')">English</div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="badge">
+        <span class="fr">Flemme Intellectuelle</span>
+        <span class="en">Intellectual Laziness</span>
+    </div>
+    
+    <h1>
+        <span class="fr">Active ton cerveau.</span>
+        <span class="en">Activate your brain.</span>
+    </h1>
+    
+    <p class="subtitle">
+        <span class="fr">Si on t'a envoyé ce lien, c'est parce que tu as refusé de fournir un <strong>effort de réflexion minimal</strong> avant de demander de l'aide.</span>
+        <span class="en">If you were sent this link, it's because you refused to provide a <strong>minimum cognitive effort</strong> before asking for help.</span>
+    </p>
+
+    <div class="card">
+        <h2>
+            <span class="fr">Le Constat</span>
+            <span class="en">The Reality</span>
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 16px;" class="fr">
+            Nous vivons à une époque formidable : tu as des tutoriels pas-à-pas, des documentations complètes, des moteurs de recherche et même des IA gratuites à ta disposition. Pourtant, tu as choisi de demander à un humain de pré-mâcher le travail à ta place parce que lire te demande trop d'énergie.
+        </p>
+        <p style="color: var(--text-muted); margin-bottom: 16px;" class="en">
+            We live in a wonderful time: you have step-by-step tutorials, complete documentation, search engines, and even free AIs at your disposal. Yet, you chose to ask a human to pre-chew the work for you because reading requires too much of your energy.
+        </p>
+        
+        <div class="example-box bad fr">
+            <div class="chat-line"><span class="user">L'assisté :</span> <span class="msg">"Ça marche pas, tu peux m'expliquer ?"</span></div>
+            <div class="chat-line"><span class="user">L'entourage :</span> <span class="msg">"Tu as lu le message d'erreur rouge écrit en gros ou le tuto ?"</span></div>
+            <div class="chat-line"><span class="user">L'assisté :</span> <span class="msg">"Non c'est trop long, flemme, abrège stp."</span></div>
+        </div>
+
+        <div class="example-box bad en">
+            <div class="chat-line"><span class="user">The Assisted:</span> <span class="msg">"It doesn't work, can you explain?"</span></div>
+            <div class="chat-line"><span class="user">The Peer:</span> <span class="msg">"Did you read the big red error message or the tutorial?"</span></div>
+            <div class="chat-line"><span class="user">The Assisted:</span> <span class="msg">"No, it's too long, too lazy, just summarize please."</span></div>
+        </div>
+        
+        <p style="color: var(--text-muted);" class="fr">
+            Ce comportement n'est pas un manque de compétences. C'est de la <strong>paresse cognitive</strong>. Ta flemme ne doit pas devenir le problème des autres.
+        </p>
+        <p style="color: var(--text-muted);" class="en">
+            This behavior is not a lack of skills. It is <strong>cognitive laziness</strong>. Your laziness should not become other people's problem.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>
+            <span class="fr">La charte de l'autonomie</span>
+            <span class="en">The Autonomy Charter</span>
+        </h2>
+        <ol>
+            <li class="fr">
+                <strong>1. Lis jusqu'au bout</strong>
+                Qu'il s'agisse d'une ligne de texte, d'un message d'erreur ou d'un guide : 99% des réponses à tes questions y sont déjà écrites. Ne t'arrête pas au premier mot technique que tu ne connais pas.
+            </li>
+            <li class="en">
+                <strong>1. Read to the end</strong>
+                Whether it's a line of text, an error message, or a guide: 99% of the answers to your questions are already written there. Don't stop at the first technical word you don't know.
+            </li>
+
+            <li class="fr">
+                <strong>2. Ne bloque pas à la moindre variation</strong>
+                Un tutoriel te montre le chemin, pas une vérité absolue. Si le bouton dans le tuto est bleu et que le tien est violet, ou s'il y a une mise à jour, active tes neurones au lieu de déclarer forfait immédiatement.
+            </li>
+            <li class="en">
+                <strong>2. Don't freeze at the slightest change</strong>
+                A tutorial shows you the path, not an absolute truth. If the button in the tutorial is blue and yours is purple, or if there is an update, activate your neurons instead of giving up immediately.
+            </li>
+
+            <li class="fr">
+                <strong>3. Formule une vraie question</strong>
+                Dire <em>"J'ai rien compris"</em> après avoir survolé une ressource est un aveu d'échec. Fais l'effort d'isoler ton problème :
+                <div class="example-box good">
+                    <div class="chat-line"><span class="user">Exemple propre :</span> <span class="msg">"J'ai bien suivi le tutoriel jusqu'à l'étape 4, j'ai ce message d'erreur spécifique que j'ai cherché sur Google, mais la solution proposée ne s'applique pas ici. Quelqu'un a une idée ?"</span></div>
+                </div>
+            </li>
+            <li class="en">
+                <strong>3. Formulate a real question</strong>
+                Saying <em>"I don't understand anything"</em> after skimming a resource is an admission of failure. Make the effort to isolate your problem:
+                <div class="example-box good">
+                    <div class="chat-line"><span class="user">Proper Example:</span> <span class="msg">"I followed the tutorial carefully up to step 4, I have this specific error message that I looked up on Google, but the proposed solution doesn't apply here. Anyone have any ideas?"</span></div>
+                </div>
+            </li>
+        </ol>
+    </div>
+
+    <div class="share-section">
+        <p class="share-title">
+            <span class="fr">Éduquer un autre endormi du bulbe</span>
+            <span class="en">Educate another brain-dead individual</span>
+        </p>
+    </div>
+
+    <footer>
+        <span class="fr">Inspiré de l'esprit de nohello.net — Fait pour préserver la santé mentale de ceux qui réfléchissent.</span>
+        <span class="en">Inspired by the spirit of nohello.net — Made to preserve the mental health of those who think.</span>
+    </footer>
+</div>
+
+<script>
+    function setLanguage(lang) {
+        if (lang === 'fr') {
+            document.body.className = 'lang-fr';
+            document.getElementById('currentLang').textContent = '🌐 FR';
+        } else if (lang === 'en') {
+            document.body.className = 'lang-en';
+            document.getElementById('currentLang').textContent = '🌐 EN';
+        }
+    }
+</script>
+
+</body>
+</html>
