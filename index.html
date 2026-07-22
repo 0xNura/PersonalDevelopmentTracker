@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Life Track - Progress, not perfection.</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,6 +17,7 @@
     body {
       background-color: #121212;
       color: #E1E1E1;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .glass-card {
@@ -47,10 +48,10 @@
     /* Checkbox Habitudes */
     .notion-check {
       appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       border: 2px solid #555;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -66,11 +67,19 @@
     .notion-check:checked::after {
       content: '✓';
       color: white;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: bold;
     }
 
     /* Scrollbars */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -85,13 +94,19 @@
       border-radius: 3px;
     }
 
-    /* Specific inputs */
+    /* Specific inputs & mobile zoom fix */
+    @media (max-width: 640px) {
+      input, select, textarea, [contenteditable] {
+        font-size: 16px !important;
+      }
+    }
+
     select {
       background-color: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: white;
       border-radius: 4px;
-      padding: 2px 4px;
+      padding: 4px 6px;
       outline: none;
     }
 
@@ -118,46 +133,46 @@
 <body class="min-h-screen pb-24 font-sans antialiased">
 
   <!-- COVER IMAGE AVEC FONDU NOIR -->
-  <div class="w-full h-52 relative overflow-hidden">
+  <div class="w-full h-40 sm:h-52 relative overflow-hidden">
     <img id="cover-img" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop"
       class="w-full h-full object-cover opacity-50" alt="Cover">
     <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#121212]"></div>
   </div>
 
-  <main class="max-w-4xl mx-auto px-6 -mt-20 relative z-10">
+  <main class="max-w-4xl mx-auto px-3 sm:px-6 -mt-12 sm:-mt-20 relative z-10">
 
     <!-- EN-TÊTE GLOBAL & PARAMÈTRES (Langue, Export/Import, Fond) -->
-    <div class="mb-4 mt-20">
-      <div class="flex flex-wrap justify-between items-start gap-4 mb-2">
+    <div class="mb-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-3">
         <div>
           <div id="page-icon" contenteditable="true" onblur="saveGlobalData()"
-            class="text-7xl mb-3 cursor-pointer inline-block leading-none">🧠</div>
+            class="text-5xl sm:text-7xl mb-2 cursor-pointer inline-block leading-none">🧠</div>
           <h1 id="page-title" contenteditable="true" onblur="saveGlobalData()"
-            class="text-4xl font-bold text-white tracking-tight outline-none mb-2">Personal Development</h1>
+            class="text-2xl sm:text-4xl font-bold text-white tracking-tight outline-none mb-1">Personal Development</h1>
         </div>
 
         <!-- BARRE D'OUTILS ET PARAMÈTRES -->
-        <div class="flex flex-wrap items-center gap-2 bg-white/5 border border-white/10 p-2 rounded-xl text-xs">
+        <div class="w-full sm:w-auto flex flex-wrap items-center justify-between sm:justify-end gap-2 bg-white/5 border border-white/10 p-2 rounded-xl text-xs">
           <!-- Changement de Langue -->
           <div class="flex items-center gap-1 px-1">
             <i class="fa-solid fa-globe text-sky-400"></i>
             <select id="lang-selector" onchange="changeLanguage(this.value)" class="bg-transparent text-xs text-white border-none cursor-pointer">
               <option value="fr">FR 🇫🇷</option>
-              <option value="en">EN 🇬🇧(WIP)</option>
+              <option value="en">EN 🇬🇧</option>
             </select>
           </div>
           <div class="w-px h-4 bg-white/10"></div>
           <!-- Changement de Fond d'écran -->
-          <button onclick="changeCoverImage()" class="px-2.5 py-1 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg transition flex items-center gap-1.5">
+          <button onclick="changeCoverImage()" class="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg transition flex items-center gap-1.5">
             <i class="fa-solid fa-image text-amber-400"></i> <span data-i18n="bgBtn">Fond</span>
           </button>
           <div class="w-px h-4 bg-white/10"></div>
           <!-- Exportation Données -->
-          <button onclick="exportData()" class="px-2.5 py-1 bg-white/5 hover:bg-white/10 text-emerald-400 rounded-lg transition flex items-center gap-1.5">
+          <button onclick="exportData()" class="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 text-emerald-400 rounded-lg transition flex items-center gap-1.5">
             <i class="fa-solid fa-download"></i> <span data-i18n="exportBtn">Exporter</span>
           </button>
           <!-- Importation Données -->
-          <label class="px-2.5 py-1 bg-white/5 hover:bg-white/10 text-cyan-400 rounded-lg transition cursor-pointer flex items-center gap-1.5">
+          <label class="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 text-cyan-400 rounded-lg transition cursor-pointer flex items-center gap-1.5">
             <i class="fa-solid fa-upload"></i> <span data-i18n="importBtn">Importer</span>
             <input type="file" id="import-file-input" onchange="importData(event)" accept=".json" class="hidden">
           </label>
@@ -168,124 +183,121 @@
           class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span data-i18n="subtitle">La progression, pas la perfection • Stocké localement</span></p>
     </div>
 
-    <!-- NAVIGATION GLOBALE (toujours visible) -->
-    <div class="glass-nav rounded-xl p-1.5 mb-8 flex items-center justify-between overflow-x-auto text-sm">
-      <div class="flex items-center gap-1">
-        <button id="nav-dashboard" onclick="switchView('dashboard')"
-          class="px-3.5 py-1.5 rounded-lg text-white font-medium bg-white/10 flex items-center gap-2 transition hover:bg-white/10">
-          <i class="fa-solid fa-chart-pie text-indigo-400"></i> <span data-i18n="navDashboard">Dashboard</span>
-        </button>
-        <button id="nav-habits" onclick="switchView('habits')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition">
-          <i class="fa-solid fa-circle-check text-emerald-400"></i> <span data-i18n="navHabits">Habitudes</span>
-        </button>
-        <button id="nav-sport" onclick="switchView('sport')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition">
-          <i class="fa-solid fa-dumbbell text-amber-400"></i> <span data-i18n="navSport">Sport</span>
-        </button>
-        <button id="nav-finances" onclick="switchView('finances')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition">
-          <i class="fa-solid fa-wallet text-cyan-400"></i> <span data-i18n="navFinances">Finances</span>
-        </button>
-        <button id="nav-books" onclick="switchView('books')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition">
-          <i class="fa-solid fa-book text-purple-400"></i> <span data-i18n="navBooks">Livres</span>
-        </button>
-        <button id="nav-focus" onclick="switchView('focus')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition">
-          <i class="fa-solid fa-stopwatch text-rose-400"></i> <span data-i18n="navFocus">Focus</span>
-        </button>
-        <button id="nav-todolist" onclick="switchView('todolist')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition">
-          <i class="fa-solid fa-list-check text-green-400"></i> <span data-i18n="navTodos">Goals</span>
-        </button>
-        <button id="nav-review" onclick="switchView('review')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition whitespace-nowrap">
-          <i class="fa-solid fa-magnifying-glass text-orange-400"></i>
-        </button>
-        <!-- NOUVEL ONGLET CRÉDITS -->
-        <button id="nav-credits" onclick="switchView('credits')"
-          class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition whitespace-nowrap">
-          <i class="fa-solid fa-circle-info text-zinc-400"></i>
-        </button>
-      </div>
+    <!-- NAVIGATION GLOBALE (Défilement tactile optimisé mobile) -->
+    <div class="glass-nav rounded-xl p-1.5 mb-6 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs sm:text-sm whitespace-nowrap">
+      <button id="nav-dashboard" onclick="switchView('dashboard')"
+        class="px-3 py-2 rounded-lg text-white font-medium bg-white/10 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-chart-pie text-indigo-400"></i> <span data-i18n="navDashboard">Dashboard</span>
+      </button>
+      <button id="nav-habits" onclick="switchView('habits')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i> <span data-i18n="navHabits">Habitudes</span>
+      </button>
+      <button id="nav-sport" onclick="switchView('sport')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-dumbbell text-amber-400"></i> <span data-i18n="navSport">Sport</span>
+      </button>
+      <button id="nav-finances" onclick="switchView('finances')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-wallet text-cyan-400"></i> <span data-i18n="navFinances">Finances</span>
+      </button>
+      <button id="nav-books" onclick="switchView('books')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-book text-purple-400"></i> <span data-i18n="navBooks">Livres</span>
+      </button>
+      <button id="nav-focus" onclick="switchView('focus')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-stopwatch text-rose-400"></i> <span data-i18n="navFocus">Focus</span>
+      </button>
+      <button id="nav-todolist" onclick="switchView('todolist')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-list-check text-green-400"></i> <span data-i18n="navTodos">Goals</span>
+      </button>
+      <button id="nav-review" onclick="switchView('review')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-magnifying-glass text-orange-400"></i> <span data-i18n="navReview">Bilan</span>
+      </button>
+      <button id="nav-credits" onclick="switchView('credits')"
+        class="px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <i class="fa-solid fa-circle-info text-zinc-400"></i>
+      </button>
     </div>
 
     <!-- ============================================== -->
     <!-- VUE : DASHBOARD -->
     <!-- ============================================== -->
-    <div id="view-dashboard" class="block space-y-8">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="glass-card p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
+    <div id="view-dashboard" class="block space-y-6 sm:space-y-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="glass-card p-4 sm:p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
           onclick="switchView('habits')">
-          <span class="text-xs font-semibold text-slate-400 uppercase" data-i18n="dashHabitRate">Taux Habitudes</span>
-          <p id="stat-habits" class="text-3xl font-bold text-emerald-400 mt-2">0%</p>
+          <span class="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase" data-i18n="dashHabitRate">Taux Habitudes</span>
+          <p id="stat-habits" class="text-2xl sm:text-3xl font-bold text-emerald-400 mt-1 sm:mt-2">0%</p>
         </div>
-        <div class="glass-card p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
+        <div class="glass-card p-4 sm:p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
           onclick="switchView('finances')">
-          <span class="text-xs font-semibold text-slate-400 uppercase" data-i18n="dashBalance">Solde Actuel</span>
-          <p id="stat-balance" class="text-3xl font-bold text-cyan-400 mt-2">0 €</p>
+          <span class="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase" data-i18n="dashBalance">Solde Actuel</span>
+          <p id="stat-balance" class="text-2xl sm:text-3xl font-bold text-cyan-400 mt-1 sm:mt-2">0 €</p>
         </div>
-        <div class="glass-card p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
+        <div class="glass-card p-4 sm:p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
           onclick="switchView('sport')">
-          <span class="text-xs font-semibold text-slate-400 uppercase" data-i18n="dashWorkouts">Séances Sport</span>
-          <p id="stat-sport" class="text-3xl font-bold text-amber-400 mt-2">0</p>
+          <span class="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase" data-i18n="dashWorkouts">Séances Sport</span>
+          <p id="stat-sport" class="text-2xl sm:text-3xl font-bold text-amber-400 mt-1 sm:mt-2">0</p>
         </div>
-        <div class="glass-card p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
+        <div class="glass-card p-4 sm:p-5 rounded-2xl cursor-pointer hover:bg-white/5 transition"
           onclick="switchView('books')">
-          <span class="text-xs font-semibold text-slate-400 uppercase" data-i18n="dashBooks">Livres lus</span>
-          <p id="stat-books" class="text-3xl font-bold text-purple-400 mt-2">0</p>
+          <span class="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase" data-i18n="dashBooks">Livres lus</span>
+          <p id="stat-books" class="text-2xl sm:text-3xl font-bold text-purple-400 mt-1 sm:mt-2">0</p>
         </div>
       </div>
 
       <!-- Focus du jour + Pense-bête -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Focus du jour -->
-        <div class="glass-card p-6 rounded-2xl">
-          <div class="flex items-center gap-2 mb-4">
+        <div class="glass-card p-5 sm:p-6 rounded-2xl">
+          <div class="flex items-center gap-2 mb-3">
             <i class="fa-solid fa-crosshairs text-rose-400"></i>
-            <h3 class="text-lg font-bold text-white" data-i18n="dashDailyFocus">Focus du jour</h3>
+            <h3 class="text-base sm:text-lg font-bold text-white" data-i18n="dashDailyFocus">Focus du jour</h3>
           </div>
           <div id="daily-focus-input" contenteditable="true" onblur="saveDailyFocus()"
-            class="min-h-[60px] bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-rose-400 transition placeholder-slate-500"
+            class="min-h-[60px] bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-rose-400 transition placeholder-slate-500"
             data-placeholder="Quel est ton objectif principal aujourd'hui ?"></div>
-          <p class="text-xs text-slate-500 mt-2 flex items-center gap-1"><i class="fa-regular fa-pen-to-square"></i>
+          <p class="text-[11px] text-slate-500 mt-2 flex items-center gap-1"><i class="fa-regular fa-pen-to-square"></i>
             <span data-i18n="clickToEdit">Clique pour éditer</span></p>
         </div>
 
         <!-- Pense-bête -->
-        <div class="glass-card p-6 rounded-2xl">
-          <div class="flex items-center gap-2 mb-4">
+        <div class="glass-card p-5 sm:p-6 rounded-2xl">
+          <div class="flex items-center gap-2 mb-3">
             <i class="fa-solid fa-note-sticky text-amber-400"></i>
-            <h3 class="text-lg font-bold text-white" data-i18n="dashMemo">Pense-bête</h3>
+            <h3 class="text-base sm:text-lg font-bold text-white" data-i18n="dashMemo">Pense-bête</h3>
           </div>
           <div id="memo-input" contenteditable="true" onblur="saveMemo()"
-            class="min-h-[100px] bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-amber-400 transition whitespace-pre-wrap"
+            class="min-h-[80px] bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-amber-400 transition whitespace-pre-wrap"
             data-placeholder="Notes, idées, rappels..."></div>
-          <p class="text-xs text-slate-500 mt-2 flex items-center gap-1"><i class="fa-regular fa-pen-to-square"></i>
+          <p class="text-[11px] text-slate-500 mt-2 flex items-center gap-1"><i class="fa-regular fa-pen-to-square"></i>
             <span data-i18n="clickToEdit">Clique pour éditer</span></p>
         </div>
       </div>
 
       <!-- Dernier Livre Lu ou En cours -->
       <section>
-        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer"
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer"
           onclick="switchView('books')">
           <i class="fa-solid fa-book text-purple-400"></i> <span data-i18n="dashCurrentBook">Lecture en cours ou terminée</span>
-          <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeLibrary">Voir la bibliothèque →</span>
+          <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeLibrary">Voir tout →</span>
         </h3>
-        <div id="dash-latest-book" class="glass-card p-5 rounded-2xl"></div>
+        <div id="dash-latest-book" class="glass-card p-4 sm:p-5 rounded-2xl"></div>
       </section>
 
       <!-- Graphique Habitudes (miroir) -->
       <section>
-        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer"
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer"
           onclick="switchView('habits')">
           <i class="fa-regular fa-calendar-days text-indigo-400"></i> <span data-i18n="dashHabitsMonth">Habitudes — Ce mois-ci</span>
           <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
         </h3>
-        <div class="glass-card p-6 rounded-2xl overflow-x-auto">
-          <div id="dash-month-chart" class="flex items-end gap-3 min-w-max h-40 border-b border-white/10 pb-2"></div>
+        <div class="glass-card p-4 sm:p-6 rounded-2xl overflow-x-auto no-scrollbar">
+          <div id="dash-month-chart" class="flex items-end gap-2.5 min-w-max h-36 border-b border-white/10 pb-2"></div>
         </div>
       </section>
 
@@ -293,18 +305,18 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Historique Focus -->
         <section>
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer"
+          <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer"
             onclick="switchView('focus')">
-            <i class="fa-solid fa-stopwatch text-rose-400"></i> <span data-i18n="dashFocusRecent">Focus — Historique récent</span>
+            <i class="fa-solid fa-stopwatch text-rose-400"></i> <span data-i18n="dashFocusRecent">Focus — Récents</span>
             <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
           </h3>
-          <div class="glass-card rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-sm">
+          <div class="glass-card rounded-2xl overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[320px]">
               <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
                 <tr>
-                  <th class="p-4" data-i18n="thDate">Date</th>
-                  <th class="p-4" data-i18n="thTask">Tâche</th>
-                  <th class="p-4 text-center" data-i18n="thDuration">Durée</th>
+                  <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                  <th class="p-3 sm:p-4" data-i18n="thTask">Tâche</th>
+                  <th class="p-3 sm:p-4 text-center" data-i18n="thDuration">Durée</th>
                 </tr>
               </thead>
               <tbody id="dash-focus-tbody" class="divide-y divide-white/5"></tbody>
@@ -314,18 +326,18 @@
 
         <!-- Historique Sport (3 logs) -->
         <section>
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer"
+          <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer"
             onclick="switchView('sport')">
-            <i class="fa-solid fa-dumbbell text-amber-400"></i> <span data-i18n="dashSportRecent">Sport — Historique récent</span>
+            <i class="fa-solid fa-dumbbell text-amber-400"></i> <span data-i18n="dashSportRecent">Sport — Récents</span>
             <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
           </h3>
-          <div class="glass-card rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-sm">
+          <div class="glass-card rounded-2xl overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[320px]">
               <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
                 <tr>
-                  <th class="p-4" data-i18n="thDate">Date</th>
-                  <th class="p-4" data-i18n="thExercise">Exercice</th>
-                  <th class="p-4 text-center" data-i18n="thWeight">Charge</th>
+                  <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                  <th class="p-3 sm:p-4" data-i18n="thExercise">Exercice</th>
+                  <th class="p-3 sm:p-4 text-center" data-i18n="thWeight">Charge</th>
                 </tr>
               </thead>
               <tbody id="dash-sport-tbody" class="divide-y divide-white/5"></tbody>
@@ -334,21 +346,21 @@
         </section>
       </div>
 
-      <!-- NOUVEAUX WIDGETS AJOUTÉS AU DASHBOARD -->
+      <!-- WIDGETS DASHBOARD -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Suivi Info User (2 Dernières Infos) -->
         <section>
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer" onclick="switchView('sport')">
+          <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer" onclick="switchView('sport')">
             <i class="fa-solid fa-weight-scale text-amber-400"></i> <span>Suivi Info User — Récent</span>
             <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
           </h3>
-          <div class="glass-card rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-sm">
+          <div class="glass-card rounded-2xl overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[320px]">
               <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
                 <tr>
-                  <th class="p-4" data-i18n="thDate">Date</th>
-                  <th class="p-4" data-i18n="thPoids">Poids</th>
-                  <th class="p-4" data-i18n="thMesures">Mesures</th>
+                  <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                  <th class="p-3 sm:p-4" data-i18n="thPoids">Poids</th>
+                  <th class="p-3 sm:p-4" data-i18n="thMesures">Mesures</th>
                 </tr>
               </thead>
               <tbody id="dash-sport-userstats-tbody" class="divide-y divide-white/5"></tbody>
@@ -358,17 +370,17 @@
 
         <!-- Rappels Quotidiens (3 Derniers Rappels) -->
         <section>
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer" onclick="switchView('todolist')">
+          <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer" onclick="switchView('todolist')">
             <i class="fa-solid fa-bell text-sky-400"></i> <span>Rappels — Récents</span>
             <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
           </h3>
-          <div class="glass-card rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-sm">
+          <div class="glass-card rounded-2xl overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[320px]">
               <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
                 <tr>
-                  <th class="p-4">Rappel</th>
-                  <th class="p-4">Récurrence</th>
-                  <th class="p-4">Jour / Heure</th>
+                  <th class="p-3 sm:p-4">Rappel</th>
+                  <th class="p-3 sm:p-4">Récurrence</th>
+                  <th class="p-3 sm:p-4">Jour / Heure</th>
                 </tr>
               </thead>
               <tbody id="dash-reminders-tbody" class="divide-y divide-white/5"></tbody>
@@ -380,28 +392,28 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Dernier Objectif (OKR) -->
         <section>
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer" onclick="switchView('todolist')">
+          <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer" onclick="switchView('todolist')">
             <i class="fa-solid fa-bullseye text-emerald-400"></i> <span>Dernier Objectif (OKR)</span>
             <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
           </h3>
-          <div id="dash-latest-okr" class="glass-card p-5 rounded-2xl"></div>
+          <div id="dash-latest-okr" class="glass-card p-4 sm:p-5 rounded-2xl"></div>
         </section>
 
         <!-- Widget Bilan Périodique (Redirection) -->
         <section>
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer" onclick="switchView('review')">
+          <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer" onclick="switchView('review')">
             <i class="fa-solid fa-magnifying-glass text-orange-400"></i> <span>Bilan Périodique</span>
             <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
           </h3>
-          <div class="glass-card p-5 rounded-2xl flex flex-col justify-between items-start gap-4 cursor-pointer hover:bg-white/5 transition" onclick="switchView('review')">
+          <div class="glass-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between items-start gap-3 cursor-pointer hover:bg-white/5 transition" onclick="switchView('review')">
             <div class="flex items-center gap-3">
-              <div class="text-3xl">🔍</div>
+              <div class="text-2xl sm:text-3xl">🔍</div>
               <div>
-                <h4 class="font-bold text-white text-base">Bilan Périodique</h4>
+                <h4 class="font-bold text-white text-sm sm:text-base">Bilan Périodique</h4>
                 <p class="text-xs text-slate-400">Effectuez votre bilan hebdomadaire ou mensuel pour faire le point.</p>
               </div>
             </div>
-            <button class="px-4 py-2 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 text-xs font-semibold rounded-xl transition flex items-center gap-2">
+            <button class="px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 text-xs font-semibold rounded-xl transition flex items-center gap-2">
               Accéder aux bilans <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
@@ -410,18 +422,18 @@
 
       <!-- Time Audit (3 Dernières Pertes de temps) -->
       <section>
-        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 cursor-pointer" onclick="switchView('focus')">
-          <i class="fa-solid fa-user-clock text-rose-400"></i> <span>Time Audit (Pertes de temps) — Récents</span>
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2 cursor-pointer" onclick="switchView('focus')">
+          <i class="fa-solid fa-user-clock text-rose-400"></i> <span>Time Audit (Pertes de temps)</span>
           <span class="text-xs text-slate-500 font-normal ml-auto" data-i18n="seeAll">Voir tout →</span>
         </h3>
-        <div class="glass-card rounded-2xl overflow-hidden">
-          <table class="w-full text-left text-sm">
+        <div class="glass-card rounded-2xl overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[500px]">
             <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
               <tr>
-                <th class="p-4" data-i18n="thDate">Date</th>
-                <th class="p-4" data-i18n="thDistraction">Distraction / Source</th>
-                <th class="p-4 text-center" data-i18n="thLostTime">Temps perdu (min)</th>
-                <th class="p-4" data-i18n="thSolution">Solution / Correctif</th>
+                <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                <th class="p-3 sm:p-4" data-i18n="thDistraction">Distraction / Source</th>
+                <th class="p-3 sm:p-4 text-center" data-i18n="thLostTime">Temps perdu (min)</th>
+                <th class="p-3 sm:p-4" data-i18n="thSolution">Solution / Correctif</th>
               </tr>
             </thead>
             <tbody id="dash-timeaudit-tbody" class="divide-y divide-white/5"></tbody>
@@ -433,33 +445,33 @@
     <!-- ============================================== -->
     <!-- VUE : HABITUDES -->
     <!-- ============================================== -->
-    <div id="view-habits" class="hidden space-y-8">
-      <div class="mb-4">
-        <h1 class="text-3xl font-bold text-white tracking-tight">✅ <span data-i18n="titleHabits">Habitudes</span></h1>
+    <div id="view-habits" class="hidden space-y-6 sm:space-y-8">
+      <div class="mb-2">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">✅ <span data-i18n="titleHabits">Habitudes</span></h1>
       </div>
 
       <section>
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-white" data-i18n="todayTasks">Tâches du jour</h2>
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-lg sm:text-xl font-bold text-white" data-i18n="todayTasks">Tâches du jour</h2>
           <button onclick="addHabit()"
             class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">+
             <span data-i18n="addHabitBtn">Nouvelle Habitude</span></button>
         </div>
-        <div class="glass-card rounded-2xl overflow-hidden mb-4">
-          <table class="w-full text-left text-sm">
+        <div class="glass-card rounded-2xl overflow-x-auto mb-4">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[400px]">
             <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
               <tr>
-                <th class="p-4" data-i18n="thHabit">Habitude</th>
-                <th class="p-4 text-center" data-i18n="thToday">Aujourd'hui</th>
-                <th class="p-4 text-center" data-i18n="thStreak">Série</th>
-                <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                <th class="p-3 sm:p-4" data-i18n="thHabit">Habitude</th>
+                <th class="p-3 sm:p-4 text-center" data-i18n="thToday">Aujourd'hui</th>
+                <th class="p-3 sm:p-4 text-center" data-i18n="thStreak">Série</th>
+                <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
               </tr>
             </thead>
             <tbody id="habits-tbody" class="divide-y divide-white/5"></tbody>
           </table>
         </div>
-        <div class="glass-card p-4 rounded-xl flex items-center gap-4">
-          <div class="font-semibold text-sm whitespace-nowrap"><span data-i18n="todayLabel">Aujourd'hui :</span> <span id="today-pct-text"
+        <div class="glass-card p-3.5 sm:p-4 rounded-xl flex items-center gap-4">
+          <div class="font-semibold text-xs sm:text-sm whitespace-nowrap"><span data-i18n="todayLabel">Aujourd'hui :</span> <span id="today-pct-text"
               class="text-emerald-400">0%</span></div>
           <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden">
             <div id="today-pct-bar"
@@ -471,75 +483,75 @@
 
       <!-- Cette semaine -->
       <section>
-        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2"><i
             class="fa-regular fa-calendar text-emerald-400"></i> <span data-i18n="thisWeek">Cette semaine</span></h3>
-        <div class="glass-card p-6 rounded-2xl">
-          <div id="this-week-chart" class="flex items-end gap-3 h-40 border-b border-white/10 pb-2"></div>
+        <div class="glass-card p-4 sm:p-6 rounded-2xl overflow-x-auto no-scrollbar">
+          <div id="this-week-chart" class="flex items-end gap-2.5 h-36 border-b border-white/10 pb-2 min-w-max"></div>
         </div>
       </section>
 
       <!-- Ce mois-ci -->
       <section>
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2"><i
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2"><i
               class="fa-regular fa-calendar-days text-indigo-400"></i> <span data-i18n="thisMonth">Ce mois-ci</span></h3>
           <button onclick="resetCurrentMonth()"
             class="text-slate-400 hover:text-red-400 text-xs font-medium flex items-center gap-1 transition"><i
-              class="fa-solid fa-trash-can"></i> <span data-i18n="resetMonth">Réinitialiser ce mois</span></button>
+              class="fa-solid fa-trash-can"></i> <span data-i18n="resetMonth">Réinitialiser</span></button>
         </div>
-        <div class="glass-card p-6 rounded-2xl overflow-x-auto">
-          <div id="this-month-chart" class="flex items-end gap-3 min-w-max h-40 border-b border-white/10 pb-2"></div>
+        <div class="glass-card p-4 sm:p-6 rounded-2xl overflow-x-auto no-scrollbar">
+          <div id="this-month-chart" class="flex items-end gap-2.5 min-w-max h-36 border-b border-white/10 pb-2"></div>
         </div>
       </section>
 
       <!-- Évolution annuelle -->
       <section>
-        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2"><i
             class="fa-solid fa-chart-line text-purple-400"></i> <span data-i18n="yearEvolution">Évolution annuelle</span></h3>
-        <div class="glass-card p-6 rounded-2xl overflow-x-auto">
-          <div id="this-year-chart" class="flex items-end gap-3 min-w-max h-40 border-b border-white/10 pb-2"></div>
+        <div class="glass-card p-4 sm:p-6 rounded-2xl overflow-x-auto no-scrollbar">
+          <div id="this-year-chart" class="flex items-end gap-2.5 min-w-max h-36 border-b border-white/10 pb-2"></div>
         </div>
       </section>
 
       <!-- Archives -->
       <section>
-        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2"><i
             class="fa-solid fa-layer-group text-pink-400"></i> <span data-i18n="archives">Archives</span></h3>
-        <div id="monthly-gallery" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+        <div id="monthly-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4"></div>
       </section>
     </div>
 
     <!-- ============================================== -->
-    <!-- VUE : SPORT (AMÉLIORÉ : USER INFO + EXERCICES) -->
+    <!-- VUE : SPORT (USER INFO + EXERCICES) -->
     <!-- ============================================== -->
-    <div id="view-sport" class="hidden space-y-8">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold text-white tracking-tight">🏋️ <span data-i18n="titleSport">Sport & Fitness</span></h1>
+    <div id="view-sport" class="hidden space-y-6 sm:space-y-8">
+      <div class="mb-4">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">🏋️ <span data-i18n="titleSport">Sport & Fitness</span></h1>
       </div>
 
-      <!-- SECTION 1 : SUIVI INFO USER (KGS ET CM CHAQUE SEMAINE) -->
+      <!-- SUIVI INFO USER -->
       <section>
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
           <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-weight-scale text-amber-400"></i> <span data-i18n="userStatsTitle">Suivi Info User (Kgs & cm)</span>
             </h2>
-            <p class="text-xs text-slate-400 mt-0.5" data-i18n="userStatsSub">Suivez l'évolution de votre poids et mensurations chaque semaine.</p>
+            <p class="text-xs text-slate-400" data-i18n="userStatsSub">Suivez l'évolution de votre poids et mensurations chaque semaine.</p>
           </div>
           <button onclick="addSportUserStat()"
-            class="px-3 py-1.5 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 rounded-lg text-xs font-medium transition">
+            class="self-start sm:self-auto px-3 py-1.5 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 rounded-lg text-xs font-medium transition">
             + <span data-i18n="addWeekStat">Saisie Hebdomadaire</span>
           </button>
         </div>
-        <div class="glass-card rounded-2xl overflow-hidden mb-6">
-          <table class="w-full text-left text-sm">
+        <div class="glass-card rounded-2xl overflow-x-auto mb-6">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[500px]">
             <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
               <tr>
-                <th class="p-4" data-i18n="thDate">Date</th>
-                <th class="p-4" data-i18n="thPoids">Poids (kg)</th>
-                <th class="p-4" data-i18n="thMesures">Tour de Taille / Bras / Poitrine (cm)</th>
-                <th class="p-4" data-i18n="thNotes">Notes</th>
-                <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                <th class="p-3 sm:p-4" data-i18n="thPoids">Poids (kg)</th>
+                <th class="p-3 sm:p-4" data-i18n="thMesures">Tour Taille/Bras/Poitrine (cm)</th>
+                <th class="p-3 sm:p-4" data-i18n="thNotes">Notes</th>
+                <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
               </tr>
             </thead>
             <tbody id="sport-userstats-tbody" class="divide-y divide-white/5"></tbody>
@@ -547,41 +559,41 @@
         </div>
       </section>
 
-      <!-- SECTION 2 : BIBLIOTHÈQUE D'EXERCICES POSSIBLES -->
+      <!-- BIBLIOTHÈQUE D'EXERCICES -->
       <section>
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
           <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-list-ul text-sky-400"></i> <span data-i18n="possibleExercisesTitle">Exercices Possibles</span>
             </h2>
-            <p class="text-xs text-slate-400 mt-0.5" data-i18n="possibleExercisesSub">Votre catalogue d'exercices à réaliser lors des entraînements.</p>
+            <p class="text-xs text-slate-400" data-i18n="possibleExercisesSub">Votre catalogue d'exercices à réaliser lors des entraînements.</p>
           </div>
           <button onclick="addPossibleExercise()"
-            class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition">
+            class="self-start sm:self-auto px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition">
             + <span data-i18n="addExerciseBtn">Ajouter un Exercice</span>
           </button>
         </div>
         <div id="possible-exercises-list" class="flex flex-wrap gap-2 mb-6"></div>
       </section>
 
-      <!-- SECTION 3 : HISTORIQUE DES SÉANCES -->
+      <!-- HISTORIQUE SÉANCES -->
       <section>
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-white" data-i18n="workoutHistory">Historique des séances</h2>
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-lg sm:text-xl font-bold text-white" data-i18n="workoutHistory">Historique des séances</h2>
           <button onclick="addWorkout()"
             class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">+
             <span data-i18n="addWorkoutBtn">Nouvelle Séance</span></button>
         </div>
-        <div class="glass-card rounded-2xl overflow-hidden">
-          <table class="w-full text-left text-sm">
+        <div class="glass-card rounded-2xl overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[550px]">
             <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
               <tr>
-                <th class="p-4" data-i18n="thDate">Date</th>
-                <th class="p-4" data-i18n="thExercise">Exercice</th>
-                <th class="p-4" data-i18n="thMuscle">Groupe Muscle</th>
-                <th class="p-4" data-i18n="thSetsReps">Séries x Reps</th>
-                <th class="p-4" data-i18n="thWeight">Charge (kg)</th>
-                <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                <th class="p-3 sm:p-4" data-i18n="thExercise">Exercice</th>
+                <th class="p-3 sm:p-4" data-i18n="thMuscle">Groupe Muscle</th>
+                <th class="p-3 sm:p-4" data-i18n="thSetsReps">Séries x Reps</th>
+                <th class="p-3 sm:p-4" data-i18n="thWeight">Charge (kg)</th>
+                <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
               </tr>
             </thead>
             <tbody id="sport-tbody" class="divide-y divide-white/5"></tbody>
@@ -591,53 +603,52 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- VUE : FINANCES (AMÉLIORÉ : DÉTAILS DÉPENSES) -->
+    <!-- VUE : FINANCES -->
     <!-- ============================================== -->
-    <div id="view-finances" class="hidden space-y-8">
-      <div class="mb-6 flex justify-between items-end">
+    <div id="view-finances" class="hidden space-y-6 sm:space-y-8">
+      <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3">
         <div>
-          <h1 class="text-3xl font-bold text-white tracking-tight">💰 <span data-i18n="titleFinances">Finances</span></h1>
+          <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">💰 <span data-i18n="titleFinances">Finances</span></h1>
         </div>
-        <div class="glass-card px-6 py-3 rounded-xl text-right">
+        <div class="glass-card px-4 py-2.5 rounded-xl text-left sm:text-right w-full sm:w-auto">
           <span class="text-xs text-slate-400 uppercase font-semibold" data-i18n="totalBalance">Solde Total</span>
-          <div id="total-balance" class="text-2xl font-bold text-cyan-400">0 €</div>
+          <div id="total-balance" class="text-xl sm:text-2xl font-bold text-cyan-400">0 €</div>
         </div>
       </div>
 
-<!-- RÉPARTITION DES DÉPENSES PAR CATÉGORIE -->
+      <!-- RÉPARTITION DES DÉPENSES -->
       <section>
-        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
           <i class="fa-solid fa-chart-pie text-cyan-400"></i> <span data-i18n="categoryBreakdown">Répartition des Dépenses</span>
         </h3>
-        <div class="glass-card p-6 rounded-2xl mb-6 flex justify-center items-center">
-          <!-- Conteneur du Camembert -->
-          <div class="relative w-full max-w-lg h-64">
+        <div class="glass-card p-4 sm:p-6 rounded-2xl mb-6 flex justify-center items-center">
+          <div class="relative w-full max-w-lg h-56 sm:h-64">
             <canvas id="financePieChart"></canvas>
           </div>
         </div>
       </section>
 
       <section>
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-white" data-i18n="transactions">Transactions</h2>
-          <div class="space-x-2">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-lg sm:text-xl font-bold text-white" data-i18n="transactions">Transactions</h2>
+          <div class="space-x-1.5 sm:space-x-2">
             <button onclick="addTransaction(-50, 'Dépense', 'Nourriture')"
-              class="px-3 py-1.5 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg text-xs font-medium transition">-
-              <span data-i18n="addExpense">- Dépense</span></button>
+              class="px-2.5 py-1.5 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg text-xs font-medium transition">-
+              <span data-i18n="addExpense">Dépense</span></button>
             <button onclick="addTransaction(100, 'Revenu', 'Revenu')"
-              class="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 rounded-lg text-xs font-medium transition">+
-              <span data-i18n="addIncome">+ Revenu</span></button>
+              class="px-2.5 py-1.5 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 rounded-lg text-xs font-medium transition">+
+              <span data-i18n="addIncome">Revenu</span></button>
           </div>
         </div>
-        <div class="glass-card rounded-2xl overflow-hidden">
-          <table class="w-full text-left text-sm">
+        <div class="glass-card rounded-2xl overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[500px]">
             <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
               <tr>
-                <th class="p-4" data-i18n="thDate">Date</th>
-                <th class="p-4" data-i18n="thLabel">Libellé</th>
-                <th class="p-4" data-i18n="thCategory">Catégorie</th>
-                <th class="p-4" data-i18n="thAmount">Montant (€)</th>
-                <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                <th class="p-3 sm:p-4" data-i18n="thLabel">Libellé</th>
+                <th class="p-3 sm:p-4" data-i18n="thCategory">Catégorie</th>
+                <th class="p-3 sm:p-4" data-i18n="thAmount">Montant (€)</th>
+                <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
               </tr>
             </thead>
             <tbody id="finances-tbody" class="divide-y divide-white/5"></tbody>
@@ -650,13 +661,13 @@
     <!-- VUE : LIVRES -->
     <!-- ============================================== -->
     <div id="view-books" class="hidden">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold text-white tracking-tight">📚 <span data-i18n="titleBooks">Bibliothèque</span></h1>
+      <div class="mb-4">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">📚 <span data-i18n="titleBooks">Bibliothèque</span></h1>
       </div>
 
       <section>
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold text-white" data-i18n="myReadings">Mes lectures</h2>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg sm:text-xl font-bold text-white" data-i18n="myReadings">Mes lectures</h2>
           <button onclick="addBook()"
             class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">+
             <span data-i18n="addBookBtn">Nouveau Livre</span></button>
@@ -666,83 +677,83 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- VUE : FOCUS (AMÉLIORÉ : TIME AUDIT) -->
+    <!-- VUE : FOCUS -->
     <!-- ============================================== -->
-    <div id="view-focus" class="hidden space-y-8">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold text-white tracking-tight">🎯 Focus Mode</h1>
+    <div id="view-focus" class="hidden space-y-6 sm:space-y-8">
+      <div class="mb-4">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">🎯 Focus Mode</h1>
       </div>
 
-      <section class="glass-card p-8 rounded-3xl mb-8 text-center relative overflow-hidden">
-        <div class="inline-flex bg-white/5 p-1 rounded-xl mb-6 border border-white/10 text-xs">
+      <section class="glass-card p-5 sm:p-8 rounded-3xl mb-6 text-center relative overflow-hidden">
+        <div class="inline-flex bg-white/5 p-1 rounded-xl mb-4 border border-white/10 text-xs">
           <button id="btn-mode-down" onclick="setMode('down')"
-            class="px-4 py-2 rounded-lg font-medium transition text-white bg-white/10">⏳ <span data-i18n="timerCountdown">Compte à rebours</span></button>
+            class="px-3 sm:px-4 py-2 rounded-lg font-medium transition text-white bg-white/10">⏳ <span data-i18n="timerCountdown">Compte à rebours</span></button>
           <button id="btn-mode-up" onclick="setMode('up')"
-            class="px-4 py-2 rounded-lg font-medium transition text-slate-400 hover:text-white">⏱️ <span data-i18n="timerStopwatch">Chronomètre</span></button>
+            class="px-3 sm:px-4 py-2 rounded-lg font-medium transition text-slate-400 hover:text-white">⏱️ <span data-i18n="timerStopwatch">Chronomètre</span></button>
         </div>
 
-        <div class="max-w-md mx-auto mb-6">
+        <div class="max-w-md mx-auto mb-4">
           <input type="text" id="task-input" placeholder="Sur quoi travailles-tu ? (ex: Code, Lecture...)"
-            class="w-full text-center bg-white/5 border border-white/10 focus:border-rose-400 rounded-xl px-4 py-2 text-sm text-white outline-none placeholder-slate-500">
+            class="w-full text-center bg-white/5 border border-white/10 focus:border-rose-400 rounded-xl px-3 py-2 text-sm text-white outline-none placeholder-slate-500">
         </div>
 
-        <div id="config-time" class="flex justify-center items-center gap-2 mb-6">
+        <div id="config-time" class="flex justify-center items-center gap-2 mb-4">
           <div class="flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-1.5">
             <input type="number" id="input-hours" min="0" max="23" value="0" onchange="resetTimer()"
-              class="w-10 bg-transparent text-center text-lg font-bold text-white outline-none">
+              class="w-10 bg-transparent text-center text-base sm:text-lg font-bold text-white outline-none">
             <span class="text-xs text-slate-400">h</span>
           </div>
           <span class="text-slate-500 font-bold">:</span>
           <div class="flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-1.5">
             <input type="number" id="input-minutes" min="0" max="59" value="25" onchange="resetTimer()"
-              class="w-10 bg-transparent text-center text-lg font-bold text-white outline-none">
+              class="w-10 bg-transparent text-center text-base sm:text-lg font-bold text-white outline-none">
             <span class="text-xs text-slate-400">m</span>
           </div>
         </div>
 
-        <div id="timer-display" class="text-6xl md:text-8xl font-black tracking-tight text-rose-400 my-4 font-mono">
+        <div id="timer-display" class="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-rose-400 my-2 font-mono">
           25:00</div>
 
-        <div class="flex justify-center items-center gap-3 mt-8">
+        <div class="flex justify-center items-center gap-2 sm:gap-3 mt-6">
           <button id="btn-start" onclick="toggleTimer()"
-            class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-xl transition flex items-center gap-2 text-sm">
+            class="px-5 py-2.5 sm:px-6 sm:py-3 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-xl transition flex items-center gap-2 text-xs sm:text-sm">
             <i class="fa-solid fa-play"></i> <span data-i18n="btnStart">Démarrer</span>
           </button>
           <button onclick="resetTimer()"
-            class="px-4 py-3 bg-white/5 hover:bg-white/10 text-slate-300 font-medium rounded-xl transition text-sm">
+            class="px-3 py-2.5 sm:px-4 sm:py-3 bg-white/5 hover:bg-white/10 text-slate-300 font-medium rounded-xl transition text-xs sm:text-sm">
             <i class="fa-solid fa-rotate-left"></i>
           </button>
           <button onclick="finishSession()"
-            class="px-4 py-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl transition text-sm flex items-center gap-2">
+            class="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl transition text-xs sm:text-sm flex items-center gap-2">
             <i class="fa-solid fa-check"></i> <span data-i18n="btnFinish">Terminer</span>
           </button>
         </div>
       </section>
 
-      <!-- SECTION TIME AUDIT (PERTES DE TEMPS) -->
+      <!-- SECTION TIME AUDIT -->
       <section>
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
           <div>
-            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+            <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-user-clock text-rose-400"></i> <span data-i18n="timeAuditTitle">Time Audit (Pertes de temps)</span>
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5" data-i18n="timeAuditSub">Identifiez et comptabilisez les distractions pour éliminer le gaspillage de temps.</p>
+            <p class="text-xs text-slate-400" data-i18n="timeAuditSub">Identifiez et comptabilisez les distractions pour éliminer le gaspillage de temps.</p>
           </div>
           <button onclick="addTimeAudit()"
-            class="px-3 py-1.5 bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 rounded-lg text-xs font-medium transition">
-            + <span data-i18n="addDistractionBtn">Consigner une perte de temps</span>
+            class="self-start sm:self-auto px-3 py-1.5 bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 rounded-lg text-xs font-medium transition">
+            + <span data-i18n="addDistractionBtn">Consigner perte</span>
           </button>
         </div>
 
-        <div class="glass-card rounded-2xl overflow-hidden mb-6">
-          <table class="w-full text-left text-sm">
+        <div class="glass-card rounded-2xl overflow-x-auto mb-6">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[500px]">
             <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
               <tr>
-                <th class="p-4" data-i18n="thDate">Date</th>
-                <th class="p-4" data-i18n="thDistraction">Distraction / Source</th>
-                <th class="p-4 text-center" data-i18n="thLostTime">Temps perdu (min)</th>
-                <th class="p-4" data-i18n="thSolution">Solution / Correctif</th>
-                <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                <th class="p-3 sm:p-4" data-i18n="thDistraction">Distraction / Source</th>
+                <th class="p-3 sm:p-4 text-center" data-i18n="thLostTime">Temps perdu (min)</th>
+                <th class="p-3 sm:p-4" data-i18n="thSolution">Solution / Correctif</th>
+                <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
               </tr>
             </thead>
             <tbody id="time-audit-tbody" class="divide-y divide-white/5"></tbody>
@@ -751,28 +762,28 @@
       </section>
 
       <section class="space-y-6">
-        <div class="glass-card p-6 rounded-2xl">
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i
+        <div class="glass-card p-4 sm:p-6 rounded-2xl">
+          <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2"><i
               class="fa-solid fa-chart-column text-rose-400"></i> <span data-i18n="focusTime7Days">Temps de Focus (7 jours)</span></h3>
-          <div id="focus-chart" class="flex items-end gap-3 h-40 border-b border-white/10 pb-2"></div>
+          <div id="focus-chart" class="flex items-end gap-2.5 h-36 border-b border-white/10 pb-2"></div>
         </div>
 
         <div>
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold text-white flex items-center gap-2"><i
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2"><i
                 class="fa-solid fa-list-check text-indigo-400"></i> <span data-i18n="focusHistory">Historique</span></h3>
             <button onclick="addManualLog()"
               class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition">+
               <span data-i18n="addManualSession">Session manuelle</span></button>
           </div>
-          <div class="glass-card rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-sm">
+          <div class="glass-card rounded-2xl overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[400px]">
               <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
                 <tr>
-                  <th class="p-4" data-i18n="thDate">Date</th>
-                  <th class="p-4" data-i18n="thTask">Tâche / Activité</th>
-                  <th class="p-4 text-center" data-i18n="thDurationMin">Durée (min)</th>
-                  <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                  <th class="p-3 sm:p-4" data-i18n="thDate">Date</th>
+                  <th class="p-3 sm:p-4" data-i18n="thTask">Tâche / Activité</th>
+                  <th class="p-3 sm:p-4 text-center" data-i18n="thDurationMin">Durée (min)</th>
+                  <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
                 </tr>
               </thead>
               <tbody id="logs-tbody" class="divide-y divide-white/5"></tbody>
@@ -783,27 +794,27 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- VUE : TODOLIST (AVEC RAPPELS ET OKR INTÉGRÉS) -->
+    <!-- VUE : TODOLIST (RAPPELS ET OKR INTÉGRÉS) -->
     <!-- ============================================== -->
-    <div id="view-todolist" class="hidden space-y-12">
+    <div id="view-todolist" class="hidden space-y-8 sm:space-y-12">
       
       <!-- SECTION RAPPELS INTÉGRÉE -->
       <div>
-        <div class="mb-6 flex justify-between items-end">
-          <h1 class="text-3xl font-bold text-white tracking-tight">🔔 <span data-i18n="titleReminders">Rappels Quotidiens</span></h1>
+        <div class="mb-4 flex justify-between items-center">
+          <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">🔔 <span data-i18n="titleReminders">Rappels Quotidiens</span></h1>
           <button onclick="addReminder()"
             class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">+
             <span data-i18n="addReminderBtn">Nouveau Rappel</span></button>
         </div>
         <section>
-          <div class="glass-card rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-sm">
+          <div class="glass-card rounded-2xl overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[450px]">
               <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
                 <tr>
-                  <th class="p-4" data-i18n="thReminderTitle">Titre (Ex: RDV, Sport, Réunion)</th>
-                  <th class="p-4" data-i18n="thRecurrence">Récurrence</th>
-                  <th class="p-4" data-i18n="thDayTime">Jour / Heure</th>
-                  <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                  <th class="p-3 sm:p-4" data-i18n="thReminderTitle">Titre (Ex: RDV, Sport)</th>
+                  <th class="p-3 sm:p-4" data-i18n="thRecurrence">Récurrence</th>
+                  <th class="p-3 sm:p-4" data-i18n="thDayTime">Jour / Heure</th>
+                  <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
                 </tr>
               </thead>
               <tbody id="reminders-tbody" class="divide-y divide-white/5"></tbody>
@@ -814,23 +825,23 @@
 
       <!-- SECTION OKR INTÉGRÉE -->
       <div>
-        <div class="mb-6 flex justify-between items-end">
-          <h1 class="text-3xl font-bold text-white tracking-tight">🎯 <span data-i18n="titleOKR">Objectifs (OKR)</span></h1>
+        <div class="mb-4 flex justify-between items-center">
+          <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">🎯 <span data-i18n="titleOKR">Objectifs (OKR)</span></h1>
           <button onclick="addOkr()"
             class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">+
             <span data-i18n="addOKRBtn">Nouvel Objectif</span></button>
         </div>
         <section>
-          <div class="glass-card rounded-2xl overflow-hidden overflow-x-auto">
-            <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+          <div class="glass-card rounded-2xl overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap min-w-[650px]">
               <thead class="bg-white/5 text-slate-400 text-xs border-b border-white/10">
                 <tr>
-                  <th class="p-4" data-i18n="thOKR">Objectif (OKR)</th>
-                  <th class="p-4" data-i18n="thKPI">Indicateur (KPI)</th>
-                  <th class="p-4 text-center" data-i18n="thCurrent">Actuel</th>
-                  <th class="p-4 text-center" data-i18n="thTarget">Cible</th>
-                  <th class="p-4 text-center" data-i18n="thProgress">Progression</th>
-                  <th class="p-4 text-right" data-i18n="thAction">Action</th>
+                  <th class="p-3 sm:p-4" data-i18n="thOKR">Objectif (OKR)</th>
+                  <th class="p-3 sm:p-4" data-i18n="thKPI">Indicateur (KPI)</th>
+                  <th class="p-3 sm:p-4 text-center" data-i18n="thCurrent">Actuel</th>
+                  <th class="p-3 sm:p-4 text-center" data-i18n="thTarget">Cible</th>
+                  <th class="p-3 sm:p-4 text-center" data-i18n="thProgress">Progression</th>
+                  <th class="p-3 sm:p-4 text-right" data-i18n="thAction">Action</th>
                 </tr>
               </thead>
               <tbody id="okr-tbody" class="divide-y divide-white/5"></tbody>
@@ -841,14 +852,14 @@
 
       <!-- SECTION TODOLIST -->
       <div>
-        <div class="mb-6 flex justify-between items-end">
-          <h1 class="text-3xl font-bold text-white tracking-tight">📝 Todo List</h1>
+        <div class="mb-4 flex justify-between items-center">
+          <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">📝 Todo List</h1>
           <button onclick="addTodo()"
             class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">+
             <span data-i18n="addTodoBtn">Nouvelle Tâche</span></button>
         </div>
         <section>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="kanban-board">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6" id="kanban-board">
             <!-- Injecté via JS -->
           </div>
         </section>
@@ -859,23 +870,23 @@
     <!-- ============================================== -->
     <!-- VUE : BILAN PÉRIODIQUE (REVIEW) -->
     <!-- ============================================== -->
-    <div id="view-review" class="hidden space-y-10">
+    <div id="view-review" class="hidden space-y-8 sm:space-y-10">
       <div>
-        <h1 class="text-3xl font-bold text-white tracking-tight mb-2">🔍 <span data-i18n="titleReview">Bilan Périodique</span></h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">🔍 <span data-i18n="titleReview">Bilan Périodique</span></h1>
         <p class="text-xs text-slate-400" data-i18n="subReview">Outil d'auto-analyse pour chasser le surplace et ajuster votre trajectoire régulièrement.</p>
       </div>
 
       <!-- SECTION BILAN HEBDOMADAIRE -->
       <section class="space-y-4">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
           <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-calendar-week text-orange-400"></i> <span data-i18n="weeklyReview">Hebdomadaire (Chaque dimanche)</span>
             </h2>
-            <p class="text-xs text-slate-400 mt-1" data-i18n="weeklyReviewSub">Vos 3 grandes victoires, vos blocages et l'action corrective pour la semaine suivante.</p>
+            <p class="text-xs text-slate-400" data-i18n="weeklyReviewSub">Vos 3 grandes victoires, vos blocages et l'action corrective pour la semaine suivante.</p>
           </div>
           <button onclick="addWeeklyReview()"
-            class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">
+            class="self-start sm:self-auto px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">
             + <span data-i18n="addWeeklyReviewBtn">Bilan Hebdo</span>
           </button>
         </div>
@@ -884,15 +895,15 @@
 
       <!-- SECTION BILAN MENSUEL -->
       <section class="space-y-4">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
           <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-calendar-days text-indigo-400"></i> <span data-i18n="monthlyReview">Mensuel (Fin de mois)</span>
             </h2>
-            <p class="text-xs text-slate-400 mt-1" data-i18n="monthlyReviewSub">Niveau de satisfaction global sur 10 et ajustement des priorités.</p>
+            <p class="text-xs text-slate-400" data-i18n="monthlyReviewSub">Niveau de satisfaction global sur 10 et ajustement des priorités.</p>
           </div>
           <button onclick="addMonthlyReview()"
-            class="px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">
+            class="self-start sm:self-auto px-3 py-1.5 bg-notionAccent hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition">
             + <span data-i18n="addMonthlyReviewBtn">Bilan Mensuel</span>
           </button>
         </div>
@@ -901,35 +912,35 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- VUE : CRÉDITS (NOUVEL ONGLET) -->
+    <!-- VUE : CRÉDITS -->
     <!-- ============================================== -->
-    <div id="view-credits" class="hidden space-y-10">
+    <div id="view-credits" class="hidden space-y-8 sm:space-y-10">
       <div>
-        <h1 class="text-3xl font-bold text-white tracking-tight mb-2">🧑‍💻 <span data-i18n="titleCredits">Crédits</span></h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">🧑‍💻 <span data-i18n="titleCredits">Crédits</span></h1>
         <p class="text-xs text-slate-400" data-i18n="subCredits">Informations sur le développeur et réseaux sociaux.</p>
       </div>
       
-      <section class="glass-card p-8 rounded-3xl text-center relative overflow-hidden">
+      <section class="glass-card p-6 sm:p-8 rounded-3xl text-center relative overflow-hidden">
         <div class="mb-4">
-          <div class="w-24 h-24 bg-gradient-to-tr from-sky-400 to-indigo-500 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl shadow-lg">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-tr from-sky-400 to-indigo-500 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl sm:text-4xl shadow-lg">
             🧠
           </div>
-          <h2 class="text-2xl font-bold text-white mb-1">Nura</h2>
-          <p class="text-sm text-notionAccent mb-4">Créateur & Dev</p>
-          <p class="text-slate-300 text-sm max-w-md mx-auto mb-8">
-            Passionné par la productivité et le développement personnel. J'ai décidé après avoir vu des gens sans scrupule vendre des templates notion a 40e de créé cet outil pour vous aider à suivre vos objectifs quotidiens, sans friction totalement GRATUITEMENT.
+          <h2 class="text-xl sm:text-2xl font-bold text-white mb-1">Nura</h2>
+          <p class="text-xs sm:text-sm text-notionAccent mb-4">Créateur & Dev</p>
+          <p class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto mb-6">
+            Passionné par la productivité et le développement personnel. J'ai créé cet outil pour vous aider à suivre vos objectifs quotidiens, sans friction totalement GRATUITEMENT.
           </p>
         </div>
         
-        <div class="flex flex-wrap justify-center items-center gap-4">
-          <a href="https://github.com/TonPseudo" target="_blank" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl transition flex items-center gap-2 text-sm font-medium">
-            <i class="fa-brands fa-github text-lg"></i> GitHub
+        <div class="flex flex-wrap justify-center items-center gap-3">
+          <a href="https://github.com" target="_blank" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl transition flex items-center gap-2 text-xs sm:text-sm font-medium">
+            <i class="fa-brands fa-github text-base"></i> GitHub
           </a>
-          <a href="https://twitter.com/TonPseudo" target="_blank" class="px-5 py-2.5 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/20 text-sky-400 rounded-xl transition flex items-center gap-2 text-sm font-medium">
-            <i class="fa-brands fa-twitter text-lg"></i> Twitter
+          <a href="https://twitter.com" target="_blank" class="px-4 py-2 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/20 text-sky-400 rounded-xl transition flex items-center gap-2 text-xs sm:text-sm font-medium">
+            <i class="fa-brands fa-twitter text-base"></i> Twitter
           </a>
-          <a href="https://instagram.com/TonPseudo" target="_blank" class="px-5 py-2.5 bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/20 text-pink-400 rounded-xl transition flex items-center gap-2 text-sm font-medium">
-            <i class="fa-brands fa-instagram text-lg"></i> Instagram
+          <a href="https://instagram.com" target="_blank" class="px-4 py-2 bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/20 text-pink-400 rounded-xl transition flex items-center gap-2 text-xs sm:text-sm font-medium">
+            <i class="fa-brands fa-instagram text-base"></i> Instagram
           </a>
         </div>
       </section>
@@ -938,7 +949,7 @@
   </main>
 
   <!-- ============================================== -->
-  <!-- JAVASCRIPT GLOBAL -->
+  <!-- JAVASCRIPT GLOBAL COMPLET -->
   <!-- ============================================== -->
   <script>
     // --- DICTIONNAIRE DE TRADUCTION (FR / EN) ---
@@ -946,25 +957,25 @@
       fr: {
         bgBtn: "Fond", exportBtn: "Exporter", importBtn: "Importer",
         subtitle: "La progression, pas la perfection • Stocké localement",
-        navDashboard: "Dashboard", navHabits: "Habitudes", navSport: "Sport", navFinances: "Finances", navBooks: "Livres", navFocus: "Focus", navTodos: "Goals", navReview: "Bilan Périodique",
+        navDashboard: "Dashboard", navHabits: "Habitudes", navSport: "Sport", navFinances: "Finances", navBooks: "Livres", navFocus: "Focus", navTodos: "Goals", navReview: "Bilan",
         navCredits: "Crédits", titleCredits: "Crédits", subCredits: "Informations sur le développeur et réseaux sociaux.",
         dashHabitRate: "Taux Habitudes", dashBalance: "Solde Actuel", dashWorkouts: "Séances Sport", dashBooks: "Livres lus",
         dashDailyFocus: "Focus du jour", dashMemo: "Pense-bête", clickToEdit: "Clique pour éditer",
-        dashCurrentBook: "Lecture en cours ou terminée", seeLibrary: "Voir la bibliothèque →", seeAll: "Voir tout →",
-        dashHabitsMonth: "Habitudes — Ce mois-ci", dashFocusRecent: "Focus — Historique récent", dashSportRecent: "Sport — Historique récent",
+        dashCurrentBook: "Lecture en cours ou terminée", seeLibrary: "Voir tout →", seeAll: "Voir tout →",
+        dashHabitsMonth: "Habitudes — Ce mois-ci", dashFocusRecent: "Focus — Récents", dashSportRecent: "Sport — Récents",
         thDate: "Date", thTask: "Tâche", thDuration: "Durée", thExercise: "Exercice", thWeight: "Charge",
         titleHabits: "Habitudes", todayTasks: "Tâches du jour", addHabitBtn: "Nouvelle Habitude", thHabit: "Habitude", thToday: "Aujourd'hui", thStreak: "Série", thAction: "Action",
-        todayLabel: "Aujourd'hui :", thisWeek: "Cette semaine", thisMonth: "Ce mois-ci", resetMonth: "Réinitialiser ce mois", yearEvolution: "Évolution annuelle", archives: "Archives",
+        todayLabel: "Aujourd'hui :", thisWeek: "Cette semaine", thisMonth: "Ce mois-ci", resetMonth: "Réinitialiser", yearEvolution: "Évolution annuelle", archives: "Archives",
         titleSport: "Sport & Fitness", userStatsTitle: "Suivi Info User (Kgs & cm)", userStatsSub: "Suivez l'évolution de votre poids et mensurations chaque semaine.", addWeekStat: "Saisie Hebdomadaire",
         thPoids: "Poids (kg)", thMesures: "Tour de Taille / Bras / Poitrine (cm)", thNotes: "Notes",
         possibleExercisesTitle: "Exercices Possibles", possibleExercisesSub: "Votre catalogue d'exercices à réaliser lors des entraînements.", addExerciseBtn: "Ajouter un Exercice",
         workoutHistory: "Historique des séances", addWorkoutBtn: "Nouvelle Séance", thMuscle: "Groupe Muscle", thSetsReps: "Séries x Reps",
-        titleFinances: "Finances", totalBalance: "Solde Total", categoryBreakdown: "Répartition des Dépenses par Catégorie", transactions: "Transactions", addExpense: "- Dépense", addIncome: "+ Revenu", thLabel: "Libellé", thCategory: "Catégorie", thAmount: "Montant (€)",
+        titleFinances: "Finances", totalBalance: "Solde Total", categoryBreakdown: "Répartition des Dépenses par Catégorie", transactions: "Transactions", addExpense: "Dépense", addIncome: "Revenu", thLabel: "Libellé", thCategory: "Catégorie", thAmount: "Montant (€)",
         titleBooks: "Bibliothèque", myReadings: "Mes lectures", addBookBtn: "Nouveau Livre",
         timerCountdown: "Compte à rebours", timerStopwatch: "Chronomètre", btnStart: "Démarrer", btnFinish: "Terminer",
-        timeAuditTitle: "Time Audit (Pertes de temps)", timeAuditSub: "Identifiez et comptabilisez les distractions pour éliminer le gaspillage de temps.", addDistractionBtn: "Consigner une perte de temps", thDistraction: "Distraction / Source", thLostTime: "Temps perdu (min)", thSolution: "Solution / Correctif",
+        timeAuditTitle: "Time Audit (Pertes de temps)", timeAuditSub: "Identifiez et comptabilisez les distractions pour éliminer le gaspillage de temps.", addDistractionBtn: "Consigner perte", thDistraction: "Distraction / Source", thLostTime: "Temps perdu (min)", thSolution: "Solution / Correctif",
         focusTime7Days: "Temps de Focus (7 jours)", focusHistory: "Historique", addManualSession: "Session manuelle", thDurationMin: "Durée (min)",
-        titleReminders: "Rappels Quotidiens", addReminderBtn: "Nouveau Rappel", thReminderTitle: "Titre (Ex: RDV, Sport, Réunion)", thRecurrence: "Récurrence", thDayTime: "Jour / Heure",
+        titleReminders: "Rappels Quotidiens", addReminderBtn: "Nouveau Rappel", thReminderTitle: "Titre (Ex: RDV, Sport)", thRecurrence: "Récurrence", thDayTime: "Jour / Heure",
         titleOKR: "Objectifs (OKR)", addOKRBtn: "Nouvel Objectif", thOKR: "Objectif (OKR)", thKPI: "Indicateur (KPI)", thCurrent: "Actuel", thTarget: "Cible", thProgress: "Progression",
         addTodoBtn: "Nouvelle Tâche", titleReview: "Bilan Périodique", subReview: "Outil d'auto-analyse pour chasser le surplace et ajuster votre trajectoire régulièrement.",
         weeklyReview: "Hebdomadaire (Chaque dimanche)", weeklyReviewSub: "Vos 3 grandes victoires, vos blocages et l'action corrective pour la semaine suivante.", addWeeklyReviewBtn: "Bilan Hebdo",
@@ -973,20 +984,20 @@
       en: {
         bgBtn: "Background", exportBtn: "Export", importBtn: "Import",
         subtitle: "Progress, not perfection • Stored locally",
-        navDashboard: "Dashboard", navHabits: "Habits", navSport: "Sport", navFinances: "Finances", navBooks: "Books", navFocus: "Focus", navTodos: "Goals", navReview: "Periodic Review",
+        navDashboard: "Dashboard", navHabits: "Habits", navSport: "Sport", navFinances: "Finances", navBooks: "Books", navFocus: "Focus", navTodos: "Goals", navReview: "Review",
         navCredits: "Credits", titleCredits: "Credits & Creator", subCredits: "Information about the developer and social networks.",
         dashHabitRate: "Habit Rate", dashBalance: "Current Balance", dashWorkouts: "Workouts", dashBooks: "Books Read",
         dashDailyFocus: "Daily Focus", dashMemo: "Memo / Notes", clickToEdit: "Click to edit",
-        dashCurrentBook: "Current or Finished Reading", seeLibrary: "View library →", seeAll: "See all →",
+        dashCurrentBook: "Current or Finished Reading", seeLibrary: "See all →", seeAll: "See all →",
         dashHabitsMonth: "Habits — This Month", dashFocusRecent: "Focus — Recent History", dashSportRecent: "Sport — Recent History",
         thDate: "Date", thTask: "Task", thDuration: "Duration", thExercise: "Exercise", thWeight: "Weight",
         titleHabits: "Habits", todayTasks: "Today's Tasks", addHabitBtn: "New Habit", thHabit: "Habit", thToday: "Today", thStreak: "Streak", thAction: "Action",
-        todayLabel: "Today:", thisWeek: "This Week", thisMonth: "This Month", resetMonth: "Reset Month", yearEvolution: "Yearly Evolution", archives: "Archives",
+        todayLabel: "Today:", thisWeek: "This Week", thisMonth: "This Month", resetMonth: "Reset", yearEvolution: "Yearly Evolution", archives: "Archives",
         titleSport: "Sport & Fitness", userStatsTitle: "User Info Tracking (Kg & cm)", userStatsSub: "Track your weight and body measurements every week.", addWeekStat: "Weekly Entry",
         thPoids: "Weight (kg)", thMesures: "Waist / Arms / Chest (cm)", thNotes: "Notes",
         possibleExercisesTitle: "Possible Exercises", possibleExercisesSub: "Your exercise catalog for workout sessions.", addExerciseBtn: "Add Exercise",
         workoutHistory: "Workout History", addWorkoutBtn: "New Workout", thMuscle: "Muscle Group", thSetsReps: "Sets x Reps",
-        titleFinances: "Finances", totalBalance: "Total Balance", categoryBreakdown: "Expense Breakdown by Category", transactions: "Transactions", addExpense: "- Expense", addIncome: "+ Income", thLabel: "Label", thCategory: "Category", thAmount: "Amount (€)",
+        titleFinances: "Finances", totalBalance: "Total Balance", categoryBreakdown: "Expense Breakdown by Category", transactions: "Transactions", addExpense: "Expense", addIncome: "Income", thLabel: "Label", thCategory: "Category", thAmount: "Amount (€)",
         titleBooks: "Library", myReadings: "My Books", addBookBtn: "New Book",
         timerCountdown: "Countdown", timerStopwatch: "Stopwatch", btnStart: "Start", btnFinish: "Finish",
         timeAuditTitle: "Time Audit (Time Wasted)", timeAuditSub: "Identify and track distractions to eliminate wasted time.", addDistractionBtn: "Log Wasted Time", thDistraction: "Distraction / Source", thLostTime: "Lost Time (min)", thSolution: "Solution / Action",
@@ -999,7 +1010,7 @@
       }
     };
 
-    // --- 1. INITIALISATION DES DONNÉES ---
+    // --- INITIALISATION DES DONNÉES ---
     let data = JSON.parse(localStorage.getItem('notion_glass_os')) || {
       title: "Personal Development",
       icon: "🧠",
@@ -1007,12 +1018,12 @@
       lang: "fr",
       habits: [], habitLogs: {},
       workouts: [],
-      sportUserStats: [], // Suivi Poids & cm
-      possibleExercises: ["Développé couché", "Squat", "Soulevé de terre", "Tractions", "Dips", "Développé militaire", "Fentes"], // Exercices possibles
+      sportUserStats: [],
+      possibleExercises: ["Développé couché", "Squat", "Soulevé de terre", "Tractions", "Dips", "Développé militaire", "Fentes"],
       finances: [],
       books: [],
       focusLogs: [],
-      timeAuditLogs: [], // Time Audit
+      timeAuditLogs: [],
       todos: [],
       reminders: [],
       okrs: [],
@@ -1023,7 +1034,6 @@
       lastHabitDate: ""
     };
 
-    // Assurer que les tableaux existent si c'est un vieil export
     if (!data.habits) data.habits = [];
     if (!data.habitLogs) data.habitLogs = {};
     if (!data.workouts) data.workouts = [];
@@ -1048,7 +1058,7 @@
 
     function saveToStorage() {
       localStorage.setItem('notion_glass_os', JSON.stringify(data));
-      renderStats(); // Met à jour le Dashboard en arrière-plan à chaque save
+      renderStats();
     }
 
     // --- FONCTIONS DE LANGUE ---
@@ -1060,7 +1070,8 @@
 
     function applyLanguage() {
       const l = data.lang || 'fr';
-      document.getElementById('lang-selector').value = l;
+      const sel = document.getElementById('lang-selector');
+      if (sel) sel.value = l;
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[l] && translations[l][key]) {
@@ -1069,9 +1080,9 @@
       });
     }
 
-    // --- FONCTIONS DE CHANGEMENT DE FOND D'ÉCRAN ---
+    // --- FONCTIONS FOND D'ÉCRAN ---
     function changeCoverImage() {
-      const newUrl = prompt("Entrez l'URL de la nouvelle image de fond (Unsplash, Direct Image Link) :", data.coverUrl);
+      const newUrl = prompt("Entrez l'URL de la nouvelle image de fond :", data.coverUrl);
       if (newUrl && newUrl.trim() !== "") {
         data.coverUrl = newUrl.trim();
         saveToStorage();
@@ -1086,7 +1097,7 @@
       }
     }
 
-    // --- FONCTIONS D'IMPORTATION / EXPORTATION DES DONNÉES (JSON) ---
+    // --- IMPORTATION / EXPORTATION ---
     function exportData() {
       const jsonStr = JSON.stringify(data, null, 2);
       const blob = new Blob([jsonStr], { type: "application/json" });
@@ -1105,19 +1116,19 @@
       reader.onload = function(e) {
         try {
           const imported = JSON.parse(e.target.result);
-          if (confirm("Attention : Importer ces données va remplacer l'ensemble de vos données actuelles. Continuer ?")) {
+          if (confirm("Attention : Importer ces données va remplacer vos données actuelles. Continuer ?")) {
             data = imported;
             saveToStorage();
             location.reload();
           }
         } catch (err) {
-          alert("Erreur lors de la lecture du fichier JSON. Assurez-vous que le fichier est valide.");
+          alert("Erreur lors de la lecture du fichier JSON.");
         }
       };
       reader.readAsText(file);
     }
 
-    // --- 2. NAVIGATION (SPA) ---
+    // --- NAVIGATION (SPA) ---
     const views = ['dashboard', 'habits', 'sport', 'finances', 'books', 'focus', 'todolist', 'review', 'credits'];
     
     function switchView(viewName) {
@@ -1140,9 +1151,10 @@
         activeBtn.classList.add('text-white', 'bg-white/10', 'font-medium');
         activeBtn.classList.remove('text-slate-400');
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- 3. LOGIQUE DASHBOARD ---
+    // --- LOGIQUE DASHBOARD ---
     function saveGlobalData() {
       data.title = document.getElementById('page-title').innerText;
       data.icon = document.getElementById('page-icon').innerText;
@@ -1165,7 +1177,6 @@
       data.finances.forEach(f => balance += f.amount);
       document.getElementById('stat-balance').innerText = balance.toFixed(2) + ' €';
 
-      // Render dashboard widgets
       renderDashboardHabitsChart();
       renderDashboardFocusHistory();
       renderDashboardSportHistory();
@@ -1180,67 +1191,63 @@
       applyLanguage();
     }
 
-    // --- DASHBOARD: MIROIR TIME AUDIT ---
     function renderDashboardTimeAudit() {
       const sorted = [...data.timeAuditLogs].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
       const el = document.getElementById('dash-timeaudit-tbody');
       if (!el) return;
       if (sorted.length === 0) {
-        el.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500 text-sm">Aucune perte de temps enregistrée</td></tr>';
+        el.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucune perte de temps enregistrée</td></tr>';
         return;
       }
       el.innerHTML = sorted.map(t => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4 text-slate-300">${t.date}</td>
-          <td class="p-4 font-medium text-rose-300">${t.distraction}</td>
-          <td class="p-4 text-center font-bold text-rose-400">${t.duration} min</td>
-          <td class="p-4 text-slate-300 text-xs">${t.solution || '-'}</td>
+          <td class="p-3 sm:p-4 text-slate-300">${t.date}</td>
+          <td class="p-3 sm:p-4 font-medium text-rose-300">${t.distraction}</td>
+          <td class="p-3 sm:p-4 text-center font-bold text-rose-400">${t.duration} min</td>
+          <td class="p-3 sm:p-4 text-slate-300 text-xs">${t.solution || '-'}</td>
         </tr>
       `).join('');
     }
 
-    // --- DASHBOARD: MIROIR SUIVI INFO USER ---
     function renderDashboardSportUserStats() {
       const sorted = [...data.sportUserStats].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 2);
       const el = document.getElementById('dash-sport-userstats-tbody');
       if (!el) return;
       if (sorted.length === 0) {
-        el.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 text-sm">Aucun suivi consigné</td></tr>';
+        el.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucun suivi consigné</td></tr>';
         return;
       }
       el.innerHTML = sorted.map(s => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4 text-slate-300">${s.date}</td>
-          <td class="p-4 font-bold text-amber-400">${s.weight} kg</td>
-          <td class="p-4 text-cyan-300 text-xs">${s.measurements || '-'}</td>
+          <td class="p-3 sm:p-4 text-slate-300">${s.date}</td>
+          <td class="p-3 sm:p-4 font-bold text-amber-400">${s.weight} kg</td>
+          <td class="p-3 sm:p-4 text-cyan-300 text-xs">${s.measurements || '-'}</td>
         </tr>
       `).join('');
     }
 
-    // --- DASHBOARD: MIROIR RAPPELS QUOTIDIENS ---
     function renderDashboardReminders() {
       const sorted = [...data.reminders].slice(-3).reverse();
       const el = document.getElementById('dash-reminders-tbody');
       if (!el) return;
       if (sorted.length === 0) {
-        el.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 text-sm">Aucun rappel enregistré</td></tr>';
+        el.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucun rappel enregistré</td></tr>';
         return;
       }
       el.innerHTML = sorted.map(r => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4 font-medium text-white">${r.title}</td>
-          <td class="p-4 text-slate-400 text-xs">${r.recurrence}</td>
-          <td class="p-4 text-slate-300 text-xs">${r.time}</td>
+          <td class="p-3 sm:p-4 font-medium text-white">${r.title}</td>
+          <td class="p-3 sm:p-4 text-slate-400 text-xs">${r.recurrence}</td>
+          <td class="p-3 sm:p-4 text-slate-300 text-xs">${r.time}</td>
         </tr>
       `).join('');
     }
 
-    // --- DASHBOARD: MIROIR DERNIER OKR ---
     function renderDashboardLatestOkr() {
       const el = document.getElementById('dash-latest-okr');
       if (!el) return;
       if (!data.okrs || data.okrs.length === 0) {
-        el.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">Aucun objectif configuré.</p>';
+        el.innerHTML = '<p class="text-xs sm:text-sm text-slate-500 text-center py-4">Aucun objectif configuré.</p>';
         return;
       }
       const latest = data.okrs[data.okrs.length - 1];
@@ -1249,7 +1256,7 @@
       el.innerHTML = `
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
-            <h4 class="font-bold text-white text-base">${latest.title || 'Sans titre'}</h4>
+            <h4 class="font-bold text-white text-sm sm:text-base">${latest.title || 'Sans titre'}</h4>
             <span class="text-xs text-slate-400 font-mono">${latest.current} / ${latest.target}</span>
           </div>
           <p class="text-xs text-slate-400">${latest.kpi || ''}</p>
@@ -1258,7 +1265,6 @@
       `;
     }
 
-    // --- FOCUS DU JOUR ---
     function renderDailyFocus() {
       const el = document.getElementById('daily-focus-input');
       const today = getTodayStr();
@@ -1276,7 +1282,6 @@
       saveToStorage();
     }
 
-    // --- PENSE-BÊTE ---
     function renderMemo() {
       const el = document.getElementById('memo-input');
       el.innerText = data.memo || "";
@@ -1288,7 +1293,6 @@
       saveToStorage();
     }
 
-    // --- DASHBOARD: MIROIR GRAPHIQUE HABITUDES ---
     function renderDashboardHabitsChart() {
       const today = getTodayStr();
       const currentMonthPrefix = today.slice(0, 7);
@@ -1302,44 +1306,42 @@
       el.innerHTML = monthLogs.map(log => {
         const h = log.pct > 0 ? log.pct : 5;
         const color = log.pct >= 80 ? 'bg-emerald-500' : (log.pct >= 40 ? 'bg-amber-400' : 'bg-red-400');
-        return `<div class="flex flex-col items-center gap-2 group cursor-pointer w-10 shrink-0">
-            <span class="text-[10px] text-white opacity-0 group-hover:opacity-100 transition">${log.pct}%</span>
-            <div class="w-full bg-white/5 rounded-t-sm h-32 relative flex items-end">
+        return `<div class="flex flex-col items-center gap-1.5 group cursor-pointer w-8 sm:w-10 shrink-0">
+            <span class="text-[9px] text-white opacity-0 group-hover:opacity-100 transition">${log.pct}%</span>
+            <div class="w-full bg-white/5 rounded-t-sm h-28 sm:h-32 relative flex items-end">
                <div class="w-full ${color} rounded-t-sm transition-all duration-500" style="height: ${h}%"></div>
             </div>
-            <span class="text-xs text-slate-400">${log.date.slice(-2)}</span>
+            <span class="text-[10px] sm:text-xs text-slate-400">${log.date.slice(-2)}</span>
           </div>`;
       }).join('');
       if (monthLogs.length === 0) {
-        el.innerHTML = '<p class="text-sm text-slate-500 py-6 mx-auto">Aucune donnée ce mois-ci</p>';
+        el.innerHTML = '<p class="text-xs sm:text-sm text-slate-500 py-6 mx-auto">Aucune donnée ce mois-ci</p>';
       }
     }
 
-    // --- DASHBOARD: MIROIR HISTORIQUE FOCUS ---
     function renderDashboardFocusHistory() {
       const sorted = [...data.focusLogs].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
       const el = document.getElementById('dash-focus-tbody');
       if (!el) return;
       if (sorted.length === 0) {
-        el.innerHTML = '<tr><td colspan="3" class="p-6 text-center text-slate-500 text-sm">Aucune session enregistrée</td></tr>';
+        el.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucune session enregistrée</td></tr>';
         return;
       }
       el.innerHTML = sorted.map(l => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4 text-slate-300">${l.date}</td>
-          <td class="p-4 font-medium text-white">${l.task}</td>
-          <td class="p-4 text-center font-semibold text-rose-400">${l.duration} min</td>
+          <td class="p-3 sm:p-4 text-slate-300">${l.date}</td>
+          <td class="p-3 sm:p-4 font-medium text-white">${l.task}</td>
+          <td class="p-3 sm:p-4 text-center font-semibold text-rose-400">${l.duration} min</td>
         </tr>
       `).join('');
     }
 
-    // --- DASHBOARD: MIROIR HISTORIQUE SPORT ---
     function renderDashboardSportHistory() {
       const sorted = [...data.workouts].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
       const el = document.getElementById('dash-sport-tbody');
       if (!el) return;
       if (sorted.length === 0) {
-        el.innerHTML = '<tr><td colspan="3" class="p-6 text-center text-slate-500 text-sm">Aucune séance enregistrée</td></tr>';
+        el.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucune séance enregistrée</td></tr>';
         return;
       }
       el.innerHTML = sorted.map(w => {
@@ -1347,22 +1349,21 @@
         const weight = w.weight !== undefined ? w.weight : (w.duration || 0);
         return `
           <tr class="hover:bg-white/[0.02] transition">
-            <td class="p-4 text-slate-300">${w.date}</td>
-            <td class="p-4 font-medium text-white">${exercise}</td>
-            <td class="p-4 text-center font-semibold text-cyan-400">${weight} kg</td>
+            <td class="p-3 sm:p-4 text-slate-300">${w.date}</td>
+            <td class="p-3 sm:p-4 font-medium text-white">${exercise}</td>
+            <td class="p-3 sm:p-4 text-center font-semibold text-cyan-400">${weight} kg</td>
           </tr>
         `;
       }).join('');
     }
 
-    // --- DASHBOARD: MIROIR DERNIER LIVRE ---
     function renderDashboardLatestBook() {
       const el = document.getElementById('dash-latest-book');
       if (!el) return;
 
       const activeBooks = data.books.filter(b => b.status === "En cours" || b.status === "Terminé" || b.status === "Lu");
       if (activeBooks.length === 0) {
-        el.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">Aucun livre en cours ou terminé.</p>';
+        el.innerHTML = '<p class="text-xs sm:text-sm text-slate-500 text-center py-4">Aucun livre en cours ou terminé.</p>';
         return;
       }
 
@@ -1381,21 +1382,21 @@
       const badgeColor = statusVal === "En cours" ? "text-amber-400 bg-amber-500/10" : "text-emerald-400 bg-emerald-500/10";
 
       el.innerHTML = `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-start gap-4">
-            <div class="text-4xl">📖</div>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+          <div class="flex items-start gap-3">
+            <div class="text-3xl sm:text-4xl">📖</div>
             <div>
-              <h4 class="font-bold text-white text-base">${latest.title || 'Sans titre'}</h4>
-              <p class="text-sm text-slate-400">${latest.author || 'Auteur inconnu'}</p>
+              <h4 class="font-bold text-white text-sm sm:text-base">${latest.title || 'Sans titre'}</h4>
+              <p class="text-xs sm:text-sm text-slate-400">${latest.author || 'Auteur inconnu'}</p>
               <div class="flex items-center gap-1 mt-1 font-mono">
                 ${starsHtml}
               </div>
             </div>
           </div>
           <div class="flex-1 sm:max-w-xs">
-            <div class="flex justify-between items-center text-xs text-slate-300 mb-1.5 font-mono">
+            <div class="flex justify-between items-center text-xs text-slate-300 mb-1 font-mono">
               <span class="px-2 py-0.5 rounded ${badgeColor} font-medium">${statusVal}</span>
-              <span>${currentP} / ${totalP} pages (${progressPct}%)</span>
+              <span>${currentP} / ${totalP} p. (${progressPct}%)</span>
             </div>
             <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
               <div class="bg-purple-500 h-full transition-all duration-300" style="width: ${progressPct}%"></div>
@@ -1405,7 +1406,7 @@
       `;
     }
 
-    // --- 4. LOGIQUE HABITUDES ---
+    // --- LOGIQUE HABITUDES ---
     function checkNewDay() {
       const today = getTodayStr();
       if (data.lastHabitDate !== today) {
@@ -1437,10 +1438,10 @@
     function renderHabits() {
       document.getElementById('habits-tbody').innerHTML = data.habits.map(h => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4 font-medium text-white" contenteditable="true" onblur="updateHabit(${h.id}, 'name', this.innerText)">${h.name}</td>
-          <td class="p-4 text-center"><input type="checkbox" class="notion-check" ${h.done ? 'checked' : ''} onchange="toggleHabit(${h.id})"></td>
-          <td class="p-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-xs font-medium">${h.streak} 🔥</span></td>
-          <td class="p-4 text-right"><button onclick="deleteHabit(${h.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
+          <td class="p-3 sm:p-4 font-medium text-white" contenteditable="true" onblur="updateHabit(${h.id}, 'name', this.innerText)">${h.name}</td>
+          <td class="p-3 sm:p-4 text-center"><input type="checkbox" class="notion-check" ${h.done ? 'checked' : ''} onchange="toggleHabit(${h.id})"></td>
+          <td class="p-3 sm:p-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full text-xs font-medium">${h.streak} 🔥</span></td>
+          <td class="p-3 sm:p-4 text-right"><button onclick="deleteHabit(${h.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
         </tr>
       `).join('');
 
@@ -1474,12 +1475,12 @@
           const dayLabel = date.toLocaleDateString(data.lang === 'en' ? 'en-US' : 'fr-FR', { weekday: 'short', timeZone: 'UTC' });
 
           return `
-            <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
-              <span class="text-[10px] text-white opacity-0 group-hover:opacity-100 transition">${pct}%</span>
-              <div class="w-full bg-white/5 rounded-t-sm h-32 relative flex items-end">
+            <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer h-full justify-end min-w-[32px]">
+              <span class="text-[9px] text-white opacity-0 group-hover:opacity-100 transition">${pct}%</span>
+              <div class="w-full bg-white/5 rounded-t-sm h-28 sm:h-32 relative flex items-end">
                 <div class="w-full bg-gradient-to-t ${fromColor} rounded-t-sm transition-all duration-500" style="height: ${h}%"></div>
               </div>
-              <span class="text-xs text-slate-400 capitalize">${dayLabel}</span>
+              <span class="text-[10px] sm:text-xs text-slate-400 capitalize">${dayLabel}</span>
             </div>`;
         }).join('');
       }
@@ -1500,12 +1501,12 @@
       document.getElementById('this-month-chart').innerHTML = monthLogs.map(log => {
         const h = log.pct > 0 ? log.pct : 5;
         const color = log.pct >= 80 ? 'bg-emerald-500' : (log.pct >= 40 ? 'bg-amber-400' : 'bg-red-400');
-        return `<div class="flex flex-col items-center gap-2 group cursor-pointer w-10 shrink-0">
-            <span class="text-[10px] text-white opacity-0 group-hover:opacity-100 transition">${log.pct}%</span>
-            <div class="w-full bg-white/5 rounded-t-sm h-32 relative flex items-end">
+        return `<div class="flex flex-col items-center gap-1.5 group cursor-pointer w-8 sm:w-10 shrink-0">
+            <span class="text-[9px] text-white opacity-0 group-hover:opacity-100 transition">${log.pct}%</span>
+            <div class="w-full bg-white/5 rounded-t-sm h-28 sm:h-32 relative flex items-end">
                <div class="w-full ${color} rounded-t-sm transition-all duration-500" style="height: ${h}%"></div>
             </div>
-            <span class="text-xs text-slate-400">${log.date.slice(-2)}</span>
+            <span class="text-[10px] sm:text-xs text-slate-400">${log.date.slice(-2)}</span>
           </div>`;
       }).join('');
 
@@ -1530,12 +1531,12 @@
           const h = Math.max(m.avg, 5);
           const fromColor = m.avg >= 80 ? 'from-purple-600 to-purple-400' : (m.avg >= 40 ? 'from-indigo-500 to-indigo-300' : 'from-slate-600 to-slate-400');
           return `
-            <div class="flex flex-col items-center gap-2 group cursor-pointer w-12 shrink-0">
-              <span class="text-[10px] text-white opacity-0 group-hover:opacity-100 transition">${m.avg}%</span>
-              <div class="w-full bg-white/5 rounded-t-sm h-32 relative flex items-end">
+            <div class="flex flex-col items-center gap-1.5 group cursor-pointer w-10 sm:w-12 shrink-0">
+              <span class="text-[9px] text-white opacity-0 group-hover:opacity-100 transition">${m.avg}%</span>
+              <div class="w-full bg-white/5 rounded-t-sm h-28 sm:h-32 relative flex items-end">
                 <div class="w-full bg-gradient-to-t ${fromColor} rounded-t-sm transition-all duration-500" style="height: ${h}%"></div>
               </div>
-              <span class="text-xs text-slate-400">${m.name}</span>
+              <span class="text-[10px] sm:text-xs text-slate-400">${m.name}</span>
             </div>`;
         }).join('');
       }
@@ -1545,10 +1546,10 @@
       document.getElementById('monthly-gallery').innerHTML = archiveKeys.map(mStr => {
         const avg = Math.round(archiveLogs[mStr].sum / archiveLogs[mStr].count);
         const name = new Date(mStr + "-01").toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' });
-        return `<div class="glass-card p-4 rounded-2xl flex flex-col items-center text-center relative group">
-            <button onclick="resetMonthLogs('${mStr}')" class="absolute top-2 right-2 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition">✕</button>
-            <h4 class="text-xs font-semibold text-slate-300 capitalize mb-2">${name}</h4>
-            <div class="text-xl font-bold text-indigo-400">${avg}%</div>
+        return `<div class="glass-card p-3 sm:p-4 rounded-2xl flex flex-col items-center text-center relative group">
+            <button onclick="resetMonthLogs('${mStr}')" class="absolute top-2 right-2 text-slate-600 hover:text-red-400 transition">✕</button>
+            <h4 class="text-xs font-semibold text-slate-300 capitalize mb-1">${name}</h4>
+            <div class="text-lg sm:text-xl font-bold text-indigo-400">${avg}%</div>
           </div>`;
       }).join('');
     }
@@ -1564,7 +1565,7 @@
       resetMonthLogs(getTodayStr().slice(0, 7));
     }
 
-    // --- 5. LOGIQUE SPORT (AVEC SUIVI USER KGS/CM ET EXERCICES POSSIBLES) ---
+    // --- LOGIQUE SPORT ---
     function addSportUserStat() {
       data.sportUserStats.push({ id: Date.now(), date: getTodayStr(), weight: 75.0, measurements: "Taille: 80 cm", notes: "" });
       saveToStorage(); renderSportUserStats();
@@ -1584,16 +1585,16 @@
       const el = document.getElementById('sport-userstats-tbody');
       if (!el) return;
       if (sorted.length === 0) {
-        el.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 text-sm">Aucun suivi hebdomadaire consigné.</td></tr>';
+        el.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucun suivi hebdomadaire consigné.</td></tr>';
         return;
       }
       el.innerHTML = sorted.map(s => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4"><input type="date" value="${s.date}" onchange="updateSportUserStat(${s.id}, 'date', this.value)" class="bg-transparent text-white outline-none"></td>
-          <td class="p-4 font-bold text-amber-400" contenteditable="true" onblur="updateSportUserStat(${s.id}, 'weight', this.innerText)">${s.weight}</td>
-          <td class="p-4 text-cyan-300" contenteditable="true" onblur="updateSportUserStat(${s.id}, 'measurements', this.innerText)">${s.measurements}</td>
-          <td class="p-4 text-slate-300 text-xs" contenteditable="true" onblur="updateSportUserStat(${s.id}, 'notes', this.innerText)">${s.notes || '-'}</td>
-          <td class="p-4 text-right"><button onclick="deleteSportUserStat(${s.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
+          <td class="p-3 sm:p-4"><input type="date" value="${s.date}" onchange="updateSportUserStat(${s.id}, 'date', this.value)" class="bg-transparent text-white outline-none text-xs sm:text-sm"></td>
+          <td class="p-3 sm:p-4 font-bold text-amber-400" contenteditable="true" onblur="updateSportUserStat(${s.id}, 'weight', this.innerText)">${s.weight}</td>
+          <td class="p-3 sm:p-4 text-cyan-300" contenteditable="true" onblur="updateSportUserStat(${s.id}, 'measurements', this.innerText)">${s.measurements}</td>
+          <td class="p-3 sm:p-4 text-slate-300 text-xs" contenteditable="true" onblur="updateSportUserStat(${s.id}, 'notes', this.innerText)">${s.notes || '-'}</td>
+          <td class="p-3 sm:p-4 text-right"><button onclick="deleteSportUserStat(${s.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
         </tr>
       `).join('');
     }
@@ -1613,9 +1614,9 @@
       const el = document.getElementById('possible-exercises-list');
       if (!el) return;
       el.innerHTML = data.possibleExercises.map((ex, idx) => `
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-medium text-slate-200">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-medium text-slate-200">
           <i class="fa-solid fa-dumbbell text-amber-400"></i> ${ex}
-          <button onclick="deletePossibleExercise(${idx})" class="text-slate-500 hover:text-red-400 ml-1">✕</button>
+          <button onclick="deletePossibleExercise(${idx})" class="text-slate-500 hover:text-red-400 ml-1 px-1">✕</button>
         </span>
       `).join('');
     }
@@ -1642,27 +1643,26 @@
         const setsReps = w.setsReps || '-';
         const weight = w.weight !== undefined ? w.weight : (w.duration || 0);
 
-        // Options dropdown pour exercices
         const exOptions = data.possibleExercises.map(pe => `<option value="${pe}" ${pe === exercise ? 'selected' : ''}>${pe}</option>`).join('');
 
         return `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4"><input type="date" value="${w.date}" onchange="updateWorkout(${w.id}, 'date', this.value)" class="bg-transparent text-white outline-none"></td>
-          <td class="p-4 font-medium text-white">
+          <td class="p-3 sm:p-4"><input type="date" value="${w.date}" onchange="updateWorkout(${w.id}, 'date', this.value)" class="bg-transparent text-white outline-none text-xs sm:text-sm"></td>
+          <td class="p-3 sm:p-4 font-medium text-white">
              <select onchange="updateWorkout(${w.id}, 'exercise', this.value)" class="bg-transparent border-none text-white outline-none cursor-pointer">
                ${exOptions}
                <option value="${exercise}" selected>${exercise}</option>
              </select>
           </td>
-          <td class="p-4 text-amber-300" contenteditable="true" onblur="updateWorkout(${w.id}, 'muscle', this.innerText)">${muscle}</td>
-          <td class="p-4" contenteditable="true" onblur="updateWorkout(${w.id}, 'setsReps', this.innerText)">${setsReps}</td>
-          <td class="p-4 font-semibold text-cyan-400" contenteditable="true" onblur="updateWorkout(${w.id}, 'weight', this.innerText)">${weight}</td>
-          <td class="p-4 text-right"><button onclick="deleteWorkout(${w.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
+          <td class="p-3 sm:p-4 text-amber-300" contenteditable="true" onblur="updateWorkout(${w.id}, 'muscle', this.innerText)">${muscle}</td>
+          <td class="p-3 sm:p-4" contenteditable="true" onblur="updateWorkout(${w.id}, 'setsReps', this.innerText)">${setsReps}</td>
+          <td class="p-3 sm:p-4 font-semibold text-cyan-400" contenteditable="true" onblur="updateWorkout(${w.id}, 'weight', this.innerText)">${weight}</td>
+          <td class="p-3 sm:p-4 text-right"><button onclick="deleteWorkout(${w.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
         </tr>`;
       }).join('');
     }
 
-    // --- 6. LOGIQUE FINANCES (AVEC CATÉGORIES AMÉLIORÉES) ---
+    // --- LOGIQUE FINANCES ---
     const financeCategories = ["Santé", "Nourriture", "Loisirs", "Loyer", "Transport", "Abonnements", "Investissement", "Argent de côté", "Revenu", "Autre"];
 
     function addTransaction(amount, label, category) {
@@ -1693,44 +1693,39 @@
 
         return `
           <tr class="hover:bg-white/[0.02] transition">
-            <td class="p-4"><input type="date" value="${f.date}" onchange="updateTransaction(${f.id}, 'date', this.value)" class="bg-transparent text-white outline-none"></td>
-            <td class="p-4 font-medium text-white" contenteditable="true" onblur="updateTransaction(${f.id}, 'label', this.innerText)">${f.label}</td>
-            <td class="p-4">
-              <select onchange="updateTransaction(${f.id}, 'category', this.value)" class="bg-transparent border-none text-slate-300 cursor-pointer">
+            <td class="p-3 sm:p-4"><input type="date" value="${f.date}" onchange="updateTransaction(${f.id}, 'date', this.value)" class="bg-transparent text-white outline-none text-xs sm:text-sm"></td>
+            <td class="p-3 sm:p-4 font-medium text-white" contenteditable="true" onblur="updateTransaction(${f.id}, 'label', this.innerText)">${f.label}</td>
+            <td class="p-3 sm:p-4">
+              <select onchange="updateTransaction(${f.id}, 'category', this.value)" class="bg-transparent border-none text-slate-300 cursor-pointer text-xs sm:text-sm">
                 ${catOptions}
               </select>
             </td>
-            <td class="p-4 font-bold ${color}" contenteditable="true" onblur="updateTransaction(${f.id}, 'amount', this.innerText)">${f.amount}</td>
-            <td class="p-4 text-right"><button onclick="deleteTransaction(${f.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
+            <td class="p-3 sm:p-4 font-bold ${color}" contenteditable="true" onblur="updateTransaction(${f.id}, 'amount', this.innerText)">${f.amount}</td>
+            <td class="p-3 sm:p-4 text-right"><button onclick="deleteTransaction(${f.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
           </tr>`;
       }).join('');
 
       document.getElementById('total-balance').innerText = total.toFixed(2) + ' €';
 
-      // ---- NOUVEAU GRAPHIQUE CAMEMBERT ----
       const pieCanvas = document.getElementById('financePieChart');
       if (pieCanvas) {
-        // On exclut les revenus du camembert de dépenses
         const expenseCategories = financeCategories.filter(c => c !== 'Revenu');
         const labels = [];
         const dataValues = [];
-        // Palette de couleurs adaptées au mode sombre
         const backgroundColors = ['#10b981', '#f43f5e', '#8b5cf6', '#3b82f6', '#f59e0b', '#06b6d4', '#ec4899', '#14b8a6', '#64748b'];
 
         expenseCategories.forEach((c) => {
           const amount = categoryTotals[c] || 0;
           if (amount > 0) {
             labels.push(c);
-            dataValues.push(amount); // On récupère la valeur positive pour le camembert
+            dataValues.push(amount);
           }
         });
 
-        // Destruction de l'ancien graphique pour éviter les doublons lors des mises à jour
         if (window.financeChartInstance) {
           window.financeChartInstance.destroy();
         }
 
-        // Création du Camembert interactif
         window.financeChartInstance = new Chart(pieCanvas, {
           type: 'pie',
           data: {
@@ -1748,18 +1743,18 @@
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                position: 'right',
+                position: window.innerWidth < 640 ? 'bottom' : 'right',
                 labels: { 
                   color: '#e1e1e1', 
-                  font: { family: 'Inter', size: 13 },
-                  padding: 20
+                  font: { family: 'Inter', size: 11 },
+                  padding: 12
                 }
               },
               tooltip: {
                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                titleFont: { size: 14, family: 'Inter' },
-                bodyFont: { size: 14, family: 'Inter' },
-                padding: 12,
+                titleFont: { size: 12, family: 'Inter' },
+                bodyFont: { size: 12, family: 'Inter' },
+                padding: 10,
                 cornerRadius: 8,
                 callbacks: {
                   label: function(context) {
@@ -1777,7 +1772,7 @@
       }
     }
 
-    // --- 7. LOGIQUE LIVRES ---
+    // --- LOGIQUE LIVRES ---
     function addBook() {
       data.books.push({
         id: Date.now(), title: "Nouveau Livre", author: "Auteur", status: "A lire", currentPage: 0, totalPages: 100, rating: 0
@@ -1810,25 +1805,25 @@
         const progressPct = Math.min(100, Math.round((currentP / totalP) * 100));
 
         return `
-          <div class="glass-card p-5 rounded-2xl relative group flex flex-col justify-between">
+          <div class="glass-card p-4 sm:p-5 rounded-2xl relative group flex flex-col justify-between space-y-3">
             <div>
-              <button onclick="deleteBook(${b.id})" class="absolute top-3 right-3 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition">✕</button>
-              <div class="mb-3 text-3xl">📖</div>
-              <h3 class="font-bold text-white mb-1 outline-none" contenteditable="true" onblur="updateBook(${b.id}, 'title', this.innerText)">${b.title}</h3>
-              <p class="text-sm text-slate-400 mb-3 outline-none" contenteditable="true" onblur="updateBook(${b.id}, 'author', this.innerText)">${b.author}</p>
+              <button onclick="deleteBook(${b.id})" class="absolute top-3 right-3 text-slate-500 hover:text-red-400 transition p-1">✕</button>
+              <div class="mb-2 text-2xl sm:text-3xl">📖</div>
+              <h3 class="font-bold text-white text-sm sm:text-base mb-0.5 outline-none" contenteditable="true" onblur="updateBook(${b.id}, 'title', this.innerText)">${b.title}</h3>
+              <p class="text-xs sm:text-sm text-slate-400 mb-2 outline-none" contenteditable="true" onblur="updateBook(${b.id}, 'author', this.innerText)">${b.author}</p>
               
-              <div class="flex items-center gap-1 mb-4">
+              <div class="flex items-center gap-1 mb-3">
                 <span class="text-xs text-slate-500 mr-1">Note :</span>
                 ${starsHtml}
               </div>
 
-              <div class="space-y-1.5 mb-4">
+              <div class="space-y-1.5 mb-3">
                 <div class="flex items-center justify-between text-xs text-slate-400">
                   <span>Pages :</span>
                   <div class="flex items-center gap-1 font-mono">
-                    <input type="number" value="${currentP}" min="0" max="${totalP}" class="w-12 bg-white/5 border border-white/10 rounded px-1 text-center text-white" onchange="updateBook(${b.id}, 'currentPage', parseInt(this.value) || 0); renderBooks();">
+                    <input type="number" value="${currentP}" min="0" max="${totalP}" class="w-12 bg-white/5 border border-white/10 rounded px-1 text-center text-white text-xs" onchange="updateBook(${b.id}, 'currentPage', parseInt(this.value) || 0); renderBooks();">
                     <span>/</span>
-                    <input type="number" value="${totalP}" min="1" class="w-12 bg-white/5 border border-white/10 rounded px-1 text-center text-white" onchange="updateBook(${b.id}, 'totalPages', parseInt(this.value) || 100); renderBooks();">
+                    <input type="number" value="${totalP}" min="1" class="w-12 bg-white/5 border border-white/10 rounded px-1 text-center text-white text-xs" onchange="updateBook(${b.id}, 'totalPages', parseInt(this.value) || 100); renderBooks();">
                   </div>
                 </div>
                 <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden font-mono">
@@ -1846,11 +1841,15 @@
       }).join('');
     }
 
-    // --- 8. LOGIQUE FOCUS (AVEC TIME AUDIT) ---
-    let focusMode = 'down'; let focusRunning = false; let focusInterval = null; let secondsElapsed = 0; let targetSeconds = 25 * 60;
+    // --- LOGIQUE FOCUS ---
+    let focusMode = 'down'; 
+    let focusRunning = false; 
+    let focusInterval = null; 
+    let secondsElapsed = 0; 
+    let targetSeconds = 25 * 60;
 
     function addTimeAudit() {
-      data.timeAuditLogs.push({ id: Date.now(), date: getTodayStr(), distraction: "Réseaux sociaux / Scroll", duration: 30, solution: "Activer le mode Ne Pas Déranger" });
+      data.timeAuditLogs.push({ id: Date.now(), date: getTodayStr(), distraction: "Réseaux sociaux", duration: 30, solution: "Activer mode Ne Pas Déranger" });
       saveToStorage(); renderTimeAudit();
     }
     function updateTimeAudit(id, key, val) {
@@ -1868,16 +1867,16 @@
       if (!el) return;
       const sorted = [...data.timeAuditLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
       if (sorted.length === 0) {
-        el.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 text-sm">Aucune perte de temps enregistrée. Bravo !</td></tr>';
+        el.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucune perte de temps enregistrée. Bravo !</td></tr>';
         return;
       }
       el.innerHTML = sorted.map(t => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4"><input type="date" value="${t.date}" onchange="updateTimeAudit(${t.id}, 'date', this.value)" class="bg-transparent text-white outline-none"></td>
-          <td class="p-4 font-medium text-rose-300" contenteditable="true" onblur="updateTimeAudit(${t.id}, 'distraction', this.innerText)">${t.distraction}</td>
-          <td class="p-4 text-center font-bold text-rose-400" contenteditable="true" onblur="updateTimeAudit(${t.id}, 'duration', this.innerText)">${t.duration}</td>
-          <td class="p-4 text-slate-300" contenteditable="true" onblur="updateTimeAudit(${t.id}, 'solution', this.innerText)">${t.solution}</td>
-          <td class="p-4 text-right"><button onclick="deleteTimeAudit(${t.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
+          <td class="p-3 sm:p-4"><input type="date" value="${t.date}" onchange="updateTimeAudit(${t.id}, 'date', this.value)" class="bg-transparent text-white outline-none text-xs sm:text-sm"></td>
+          <td class="p-3 sm:p-4 font-medium text-rose-300" contenteditable="true" onblur="updateTimeAudit(${t.id}, 'distraction', this.innerText)">${t.distraction}</td>
+          <td class="p-3 sm:p-4 text-center font-bold text-rose-400" contenteditable="true" onblur="updateTimeAudit(${t.id}, 'duration', this.innerText)">${t.duration}</td>
+          <td class="p-3 sm:p-4 text-slate-300 text-xs" contenteditable="true" onblur="updateTimeAudit(${t.id}, 'solution', this.innerText)">${t.solution}</td>
+          <td class="p-3 sm:p-4 text-right"><button onclick="deleteTimeAudit(${t.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
         </tr>
       `).join('');
     }
@@ -1885,273 +1884,396 @@
     function setMode(newMode) {
       if (focusRunning) toggleTimer();
       focusMode = newMode;
-      document.getElementById('btn-mode-down').className = focusMode === 'down' ? 'px-4 py-2 rounded-lg font-medium transition text-white bg-white/10' : 'px-4 py-2 rounded-lg font-medium transition text-slate-400 hover:text-white';
-      document.getElementById('btn-mode-up').className = focusMode === 'up' ? 'px-4 py-2 rounded-lg font-medium transition text-white bg-white/10' : 'px-4 py-2 rounded-lg font-medium transition text-slate-400 hover:text-white';
-      document.getElementById('config-time').style.display = focusMode === 'down' ? 'flex' : 'none';
+      document.getElementById('btn-mode-down').className = focusMode === 'down' ? 'px-3 sm:px-4 py-2 rounded-lg font-medium transition text-white bg-white/10' : 'px-3 sm:px-4 py-2 rounded-lg font-medium transition text-slate-400 hover:text-white';
+      document.getElementById('btn-mode-up').className = focusMode === 'up' ? 'px-3 sm:px-4 py-2 rounded-lg font-medium transition text-white bg-white/10' : 'px-3 sm:px-4 py-2 rounded-lg font-medium transition text-slate-400 hover:text-white';
+      
+      const configEl = document.getElementById('config-time');
+      if (configEl) {
+        if (focusMode === 'up') configEl.classList.add('hidden');
+        else configEl.classList.remove('hidden');
+      }
       resetTimer();
     }
-    function getTargetSeconds() { return (parseInt(document.getElementById('input-hours').value) || 0) * 3600 + (parseInt(document.getElementById('input-minutes').value) || 0) * 60; }
-    function updateDisplay() {
-      let currentSec = focusMode === 'down' ? Math.max(0, targetSeconds - secondsElapsed) : secondsElapsed;
-      const h = Math.floor(currentSec / 3600); const m = Math.floor((currentSec % 3600) / 60); const s = currentSec % 60;
-      let str = h > 0 ? `${h.toString().padStart(2, '0')}:` : "";
-      str += `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-      document.getElementById('timer-display').innerText = str;
+
+    function resetTimer() {
+      if (focusRunning) toggleTimer();
+      secondsElapsed = 0;
+      const h = parseInt(document.getElementById('input-hours').value) || 0;
+      const m = parseInt(document.getElementById('input-minutes').value) || 0;
+      targetSeconds = (h * 3600) + (m * 60);
+      updateTimerDisplay();
     }
+
     function toggleTimer() {
       const btn = document.getElementById('btn-start');
       if (focusRunning) {
-        clearInterval(focusInterval); focusRunning = false;
-        btn.innerHTML = `<i class="fa-solid fa-play"></i> Reprendre`; btn.classList.replace('bg-amber-500', 'bg-rose-500');
+        clearInterval(focusInterval);
+        focusRunning = false;
+        if (btn) btn.innerHTML = `<i class="fa-solid fa-play"></i> <span>${translations[data.lang || 'fr'].btnStart || 'Démarrer'}</span>`;
       } else {
-        targetSeconds = getTargetSeconds();
-        if (focusMode === 'down' && targetSeconds <= 0) return alert("Règle une durée supérieure à 0 !");
+        if (focusMode === 'down') {
+          const h = parseInt(document.getElementById('input-hours').value) || 0;
+          const m = parseInt(document.getElementById('input-minutes').value) || 0;
+          targetSeconds = (h * 3600) + (m * 60);
+          if (targetSeconds <= 0 && secondsElapsed === 0) {
+            alert("Veuillez définir une durée supérieure à 0.");
+            return;
+          }
+        }
         focusRunning = true;
-        btn.innerHTML = `<i class="fa-solid fa-pause"></i> Pause`; btn.classList.replace('bg-rose-500', 'bg-amber-500');
+        if (btn) btn.innerHTML = `<i class="fa-solid fa-pause"></i> <span>Pause</span>`;
         focusInterval = setInterval(() => {
-          secondsElapsed++; updateDisplay();
+          secondsElapsed++;
+          updateTimerDisplay();
           if (focusMode === 'down' && secondsElapsed >= targetSeconds) {
-            clearInterval(focusInterval); focusRunning = false; alert("⏰ Temps écoulé !"); finishSession();
+            clearInterval(focusInterval);
+            focusRunning = false;
+            if (btn) btn.innerHTML = `<i class="fa-solid fa-play"></i> <span>${translations[data.lang || 'fr'].btnStart || 'Démarrer'}</span>`;
+            alert("⏰ Temps écoulé ! Session Focus terminée.");
+            finishSession();
           }
         }, 1000);
       }
     }
-    function resetTimer() { if (focusRunning) toggleTimer(); secondsElapsed = 0; targetSeconds = getTargetSeconds(); updateDisplay(); }
-    function finishSession() {
-      if (secondsElapsed < 10) { alert("Session trop courte (< 10s)."); resetTimer(); return; }
-      data.focusLogs.push({ id: Date.now(), date: getTodayStr(), task: document.getElementById('task-input').value || "Session Focus", duration: Math.max(1, Math.round(secondsElapsed / 60)) });
-      saveToStorage(); renderFocus(); resetTimer(); document.getElementById('task-input').value = "";
+
+    function updateTimerDisplay() {
+      const display = document.getElementById('timer-display');
+      if (!display) return;
+      let displaySeconds = 0;
+      if (focusMode === 'down') {
+        displaySeconds = Math.max(0, targetSeconds - secondsElapsed);
+      } else {
+        displaySeconds = secondsElapsed;
+      }
+      const h = Math.floor(displaySeconds / 3600);
+      const m = Math.floor((displaySeconds % 3600) / 60);
+      const s = displaySeconds % 60;
+      
+      let str = "";
+      if (h > 0) str += String(h).padStart(2, '0') + ":";
+      str += String(m).padStart(2, '0') + ":" + String(s).padStart(2, '0');
+      display.innerText = str;
     }
-    function addManualLog() { data.focusLogs.push({ id: Date.now(), date: getTodayStr(), task: "Nouvelle tâche", duration: 25 }); saveToStorage(); renderFocus(); }
-    function updateLog(id, key, val) { data.focusLogs.find(x => x.id === id)[key] = key === 'duration' ? parseInt(val) || 0 : val; saveToStorage(); renderFocus(); }
-    function deleteLog(id) { data.focusLogs = data.focusLogs.filter(x => x.id !== id); saveToStorage(); renderFocus(); }
+
+    function finishSession() {
+      const task = document.getElementById('task-input').value.trim() || "Session Focus";
+      const durationMin = Math.max(1, Math.round(secondsElapsed / 60));
+      if (secondsElapsed > 10) {
+        data.focusLogs.push({ id: Date.now(), date: getTodayStr(), task: task, duration: durationMin });
+        saveToStorage();
+      }
+      resetTimer();
+      renderFocus();
+      renderStats();
+    }
+
+    function addManualLog() {
+      const task = prompt("Nom de l'activité / tâche :", "Travail intense");
+      if (!task) return;
+      const duration = parseInt(prompt("Durée en minutes :", "30")) || 30;
+      data.focusLogs.push({ id: Date.now(), date: getTodayStr(), task: task, duration: duration });
+      saveToStorage();
+      renderFocus();
+      renderStats();
+    }
+
+    function updateFocusLog(id, key, val) {
+      if (key === 'duration') val = parseInt(val) || 0;
+      const log = data.focusLogs.find(x => x.id === id);
+      if (log) log[key] = val;
+      saveToStorage();
+    }
+
+    function deleteFocusLog(id) {
+      data.focusLogs = data.focusLogs.filter(x => x.id !== id);
+      saveToStorage();
+      renderFocus();
+      renderStats();
+    }
 
     function renderFocus() {
       renderTimeAudit();
       const sorted = [...data.focusLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
-      document.getElementById('logs-tbody').innerHTML = sorted.map(l => `
+      const tbody = document.getElementById('logs-tbody');
+      if (tbody) {
+        if (sorted.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucune session enregistrée.</td></tr>';
+        } else {
+          tbody.innerHTML = sorted.map(l => `
+            <tr class="hover:bg-white/[0.02] transition">
+              <td class="p-3 sm:p-4"><input type="date" value="${l.date}" onchange="updateFocusLog(${l.id}, 'date', this.value)" class="bg-transparent text-white outline-none text-xs sm:text-sm"></td>
+              <td class="p-3 sm:p-4 font-medium text-white" contenteditable="true" onblur="updateFocusLog(${l.id}, 'task', this.innerText)">${l.task}</td>
+              <td class="p-3 sm:p-4 text-center font-bold text-rose-400" contenteditable="true" onblur="updateFocusLog(${l.id}, 'duration', this.innerText)">${l.duration}</td>
+              <td class="p-3 sm:p-4 text-right"><button onclick="deleteFocusLog(${l.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      const focusChart = document.getElementById('focus-chart');
+      if (focusChart) {
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          last7Days.push(d.toISOString().slice(0, 10));
+        }
+
+        const totalsByDay = {};
+        data.focusLogs.forEach(l => {
+          totalsByDay[l.date] = (totalsByDay[l.date] || 0) + l.duration;
+        });
+
+        const maxVal = Math.max(...last7Days.map(d => totalsByDay[d] || 0), 60);
+
+        focusChart.innerHTML = last7Days.map(day => {
+          const totalMin = totalsByDay[day] || 0;
+          const h = Math.max(5, Math.round((totalMin / maxVal) * 100));
+          const [y, m, dVal] = day.split('-').map(Number);
+          const date = new Date(Date.UTC(y, m - 1, dVal));
+          const dayLabel = date.toLocaleDateString(data.lang === 'en' ? 'en-US' : 'fr-FR', { weekday: 'short', timeZone: 'UTC' });
+
+          return `
+            <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer h-full justify-end min-w-[32px]">
+              <span class="text-[9px] text-white opacity-0 group-hover:opacity-100 transition">${totalMin}m</span>
+              <div class="w-full bg-white/5 rounded-t-sm h-28 sm:h-32 relative flex items-end">
+                <div class="w-full bg-gradient-to-t from-rose-600 to-rose-400 rounded-t-sm transition-all duration-500" style="height: ${h}%"></div>
+              </div>
+              <span class="text-[10px] sm:text-xs text-slate-400 capitalize">${dayLabel}</span>
+            </div>`;
+        }).join('');
+      }
+    }
+
+    // --- LOGIQUE TODOLIST, RAPPELS ET OKR ---
+    function addReminder() {
+      data.reminders.push({ id: Date.now(), title: "Nouveau Rappel", recurrence: "Quotidien", time: "09:00" });
+      saveToStorage(); renderReminders(); renderDashboardReminders();
+    }
+    function updateReminder(id, key, val) {
+      const r = data.reminders.find(x => x.id === id);
+      if (r) r[key] = val;
+      saveToStorage(); renderDashboardReminders();
+    }
+    function deleteReminder(id) {
+      data.reminders = data.reminders.filter(x => x.id !== id);
+      saveToStorage(); renderReminders(); renderDashboardReminders();
+    }
+    function renderReminders() {
+      const tbody = document.getElementById('reminders-tbody');
+      if (!tbody) return;
+      if (data.reminders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucun rappel programmé.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.reminders.map(r => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4"><input type="date" value="${l.date}" onchange="updateLog(${l.id}, 'date', this.value)" class="bg-transparent text-white outline-none"></td>
-          <td class="p-4 font-medium text-white" contenteditable="true" onblur="updateLog(${l.id}, 'task', this.innerText)">${l.task}</td>
-          <td class="p-4 text-center font-semibold text-rose-400" contenteditable="true" onblur="updateLog(${l.id}, 'duration', this.innerText)">${l.duration}</td>
-          <td class="p-4 text-right"><button onclick="deleteLog(${l.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
+          <td class="p-3 sm:p-4 font-medium text-white" contenteditable="true" onblur="updateReminder(${r.id}, 'title', this.innerText)">${r.title}</td>
+          <td class="p-3 sm:p-4">
+            <select onchange="updateReminder(${r.id}, 'recurrence', this.value)" class="bg-transparent border-none text-slate-300 cursor-pointer text-xs sm:text-sm">
+              <option value="Quotidien" ${r.recurrence === 'Quotidien' ? 'selected' : ''}>Quotidien</option>
+              <option value="Hebdomadaire" ${r.recurrence === 'Hebdomadaire' ? 'selected' : ''}>Hebdomadaire</option>
+              <option value="Mensuel" ${r.recurrence === 'Mensuel' ? 'selected' : ''}>Mensuel</option>
+              <option value="Ponctuel" ${r.recurrence === 'Ponctuel' ? 'selected' : ''}>Ponctuel</option>
+            </select>
+          </td>
+          <td class="p-3 sm:p-4 text-slate-300 text-xs sm:text-sm" contenteditable="true" onblur="updateReminder(${r.id}, 'time', this.innerText)">${r.time}</td>
+          <td class="p-3 sm:p-4 text-right"><button onclick="deleteReminder(${r.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
         </tr>
       `).join('');
-
-      const days = []; for (let i = 6; i >= 0; i--) { let d = new Date(); d.setDate(d.getDate() - i); days.push(d.toISOString().slice(0, 10)); }
-      const totals = {}; days.forEach(day => totals[day] = 0);
-      data.focusLogs.forEach(l => { if (totals[l.date] !== undefined) totals[l.date] += parseInt(l.duration) || 0; });
-      const maxMins = Math.max(...Object.values(totals), 60);
-
-      document.getElementById('focus-chart').innerHTML = days.map(day => {
-        const pct = Math.min(100, Math.round((totals[day] / maxMins) * 100));
-        const [y, m, dVal] = day.split('-').map(Number);
-        const date = new Date(Date.UTC(y, m - 1, dVal));
-        const dayLabel = date.toLocaleDateString(data.lang === 'en' ? 'en-US' : 'fr-FR', { weekday: 'short', timeZone: 'UTC' });
-
-        return `
-          <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
-            <span class="text-[10px] text-rose-300 opacity-0 group-hover:opacity-100 transition">${totals[day]}m</span>
-            <div class="w-full bg-white/5 rounded-t-lg h-32 relative flex items-end overflow-hidden">
-              <div class="w-full bg-gradient-to-t from-rose-600 to-rose-400 rounded-t-lg transition-all duration-500" style="height: ${Math.max(pct, 4)}%"></div>
-            </div>
-            <span class="text-xs text-slate-400 capitalize">${dayLabel}</span>
-          </div>`;
-      }).join('');
     }
 
-    // --- 9. LOGIQUE TODOLIST (KANBAN) ---
+    function addOkr() {
+      data.okrs.push({ id: Date.now(), title: "Objectif Trimestriel", kpi: "KPI / Cible", current: 0, target: 100 });
+      saveToStorage(); renderOkrs(); renderDashboardLatestOkr();
+    }
+    function updateOkr(id, key, val) {
+      if (key === 'current' || key === 'target') val = parseInt(val) || 0;
+      const okr = data.okrs.find(x => x.id === id);
+      if (okr) okr[key] = val;
+      saveToStorage(); renderOkrs(); renderDashboardLatestOkr();
+    }
+    function deleteOkr(id) {
+      data.okrs = data.okrs.filter(x => x.id !== id);
+      saveToStorage(); renderOkrs(); renderDashboardLatestOkr();
+    }
+    function generateProgressBar(current, target) {
+      const tgt = target > 0 ? target : 1;
+      const pct = Math.min(100, Math.max(0, Math.round((current / tgt) * 100)));
+      const filled = Math.round(pct / 10);
+      const empty = 10 - filled;
+      return '█'.repeat(filled) + '░'.repeat(empty) + ` ${pct}%`;
+    }
+    function renderOkrs() {
+      const tbody = document.getElementById('okr-tbody');
+      if (!tbody) return;
+      if (data.okrs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs sm:text-sm">Aucun objectif défini.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.okrs.map(o => `
+        <tr class="hover:bg-white/[0.02] transition">
+          <td class="p-3 sm:p-4 font-bold text-white" contenteditable="true" onblur="updateOkr(${o.id}, 'title', this.innerText)">${o.title}</td>
+          <td class="p-3 sm:p-4 text-slate-300" contenteditable="true" onblur="updateOkr(${o.id}, 'kpi', this.innerText)">${o.kpi}</td>
+          <td class="p-3 sm:p-4 text-center font-semibold text-emerald-400" contenteditable="true" onblur="updateOkr(${o.id}, 'current', this.innerText)">${o.current}</td>
+          <td class="p-3 sm:p-4 text-center font-semibold text-slate-300" contenteditable="true" onblur="updateOkr(${o.id}, 'target', this.innerText)">${o.target}</td>
+          <td class="p-3 sm:p-4 text-center font-mono text-xs text-emerald-400">${generateProgressBar(o.current, o.target)}</td>
+          <td class="p-3 sm:p-4 text-right"><button onclick="deleteOkr(${o.id})" class="text-slate-500 hover:text-red-400 px-2 py-1">✕</button></td>
+        </tr>
+      `).join('');
+    }
+
     function addTodo() {
-      data.todos.push({ id: Date.now(), text: "Nouvelle Tâche", status: "todo" });
-      saveToStorage(); renderTodolist();
+      data.todos.push({ id: Date.now(), title: "Nouvelle Tâche", status: "todo" });
+      saveToStorage(); renderTodos();
     }
-    function updateTodo(id, key, val) {
-      data.todos.find(x => x.id === id)[key] = val; saveToStorage();
+    function updateTodoTitle(id, title) {
+      const t = data.todos.find(x => x.id === id);
+      if (t) t.title = title;
+      saveToStorage();
     }
-    function moveTodo(id, status) {
-      data.todos.find(x => x.id === id).status = status;
-      saveToStorage(); renderTodolist();
+    function moveTodo(id, newStatus) {
+      const t = data.todos.find(x => x.id === id);
+      if (t) t.status = newStatus;
+      saveToStorage(); renderTodos();
     }
     function deleteTodo(id) {
       data.todos = data.todos.filter(x => x.id !== id);
-      saveToStorage(); renderTodolist();
+      saveToStorage(); renderTodos();
     }
-    
-    function renderTodolist() {
+    function renderTodos() {
       const board = document.getElementById('kanban-board');
       if (!board) return;
 
       const columns = [
-        { id: 'todo', title: data.lang === 'en' ? 'To Do' : 'À faire', color: 'border-slate-500', bg: 'bg-slate-500/20', textBg: 'text-slate-300' },
-        { id: 'doing', title: data.lang === 'en' ? 'In Progress' : 'En cours', color: 'border-amber-400', bg: 'bg-amber-500/20', textBg: 'text-amber-400' },
-        { id: 'done', title: data.lang === 'en' ? 'Done' : 'Terminé', color: 'border-emerald-400', bg: 'bg-emerald-500/20', textBg: 'text-emerald-400' }
+        { id: 'todo', title: 'À Faire 📌', color: 'border-amber-500/30 bg-amber-500/5' },
+        { id: 'doing', title: 'En Cours ⚡', color: 'border-sky-500/30 bg-sky-500/5' },
+        { id: 'done', title: 'Terminé ✅', color: 'border-emerald-500/30 bg-emerald-500/5' }
       ];
 
       board.innerHTML = columns.map(col => {
-        const colTodos = data.todos.filter(t => t.status === col.id);
-        return `
-          <div class="glass-card p-4 rounded-2xl flex flex-col gap-4">
-            <div class="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 class="font-bold text-sm ${col.textBg}">${col.title}</h3>
-              <span class="text-xs px-2 py-0.5 rounded-full ${col.bg} ${col.textBg} font-semibold">${colTodos.length}</span>
+        const items = data.todos.filter(t => (t.status || 'todo') === col.id);
+        const cards = items.map(item => `
+          <div class="glass-card p-3 rounded-xl flex items-center justify-between gap-2 group">
+            <span contenteditable="true" onblur="updateTodoTitle(${item.id}, this.innerText)" class="text-xs sm:text-sm text-white flex-1 outline-none">${item.title}</span>
+            <div class="flex items-center gap-1">
+              ${col.id !== 'todo' ? `<button onclick="moveTodo(${item.id}, 'todo')" class="text-xs px-1.5 py-1 rounded bg-white/10 text-slate-300 hover:bg-white/20">📌</button>` : ''}
+              ${col.id !== 'doing' ? `<button onclick="moveTodo(${item.id}, 'doing')" class="text-xs px-1.5 py-1 rounded bg-white/10 text-slate-300 hover:bg-white/20">⚡</button>` : ''}
+              ${col.id !== 'done' ? `<button onclick="moveTodo(${item.id}, 'done')" class="text-xs px-1.5 py-1 rounded bg-white/10 text-slate-300 hover:bg-white/20">✅</button>` : ''}
+              <button onclick="deleteTodo(${item.id})" class="text-xs text-slate-500 hover:text-red-400 ml-1 p-1">✕</button>
             </div>
-            <div class="space-y-3 min-h-[150px]">
-              ${colTodos.map(t => `
-                <div class="glass-card p-3 rounded-xl border border-white/5 flex flex-col gap-2">
-                  <p class="text-sm text-white outline-none" contenteditable="true" onblur="updateTodo(${t.id}, 'text', this.innerText)">${t.text}</p>
-                  <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
-                    <select onchange="moveTodo(${t.id}, this.value)" class="bg-transparent border-none text-xs text-slate-400 outline-none cursor-pointer">
-                      <option value="todo" ${t.status === 'todo' ? 'selected' : ''}>À faire</option>
-                      <option value="doing" ${t.status === 'doing' ? 'selected' : ''}>En cours</option>
-                      <option value="done" ${t.status === 'done' ? 'selected' : ''}>Terminé</option>
-                    </select>
-                    <button onclick="deleteTodo(${t.id})" class="text-slate-500 hover:text-red-400">✕</button>
-                  </div>
-                </div>
-              `).join('')}
+          </div>
+        `).join('');
+
+        return `
+          <div class="glass-card p-3.5 sm:p-4 rounded-2xl border ${col.color} space-y-3">
+            <div class="flex justify-between items-center mb-1">
+              <h3 class="font-bold text-white text-xs sm:text-sm">${col.title}</h3>
+              <span class="text-xs font-mono px-2 py-0.5 bg-white/10 rounded-full text-slate-300">${items.length}</span>
+            </div>
+            <div class="space-y-2 min-h-[80px]">
+              ${cards.length > 0 ? cards : '<p class="text-xs text-slate-500 italic py-4 text-center">Aucune tâche</p>'}
             </div>
           </div>
         `;
       }).join('');
     }
 
-    // --- 10. LOGIQUE RAPPELS ---
-    function addReminder() {
-      data.reminders.push({ id: Date.now(), title: "Nouveau Rappel", recurrence: "Quotidien", time: "09:00" });
-      saveToStorage(); renderReminders();
-    }
-    function updateReminder(id, key, val) {
-      data.reminders.find(x => x.id === id)[key] = val; saveToStorage(); renderReminders();
-    }
-    function deleteReminder(id) {
-      data.reminders = data.reminders.filter(x => x.id !== id); saveToStorage(); renderReminders();
-    }
-    function renderReminders() {
-      const el = document.getElementById('reminders-tbody');
-      if (!el) return;
-      el.innerHTML = data.reminders.map(r => `
-        <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4 font-medium text-white" contenteditable="true" onblur="updateReminder(${r.id}, 'title', this.innerText)">${r.title}</td>
-          <td class="p-4 text-slate-300" contenteditable="true" onblur="updateReminder(${r.id}, 'recurrence', this.innerText)">${r.recurrence}</td>
-          <td class="p-4 text-slate-300" contenteditable="true" onblur="updateReminder(${r.id}, 'time', this.innerText)">${r.time}</td>
-          <td class="p-4 text-right"><button onclick="deleteReminder(${r.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
-        </tr>
-      `).join('');
-    }
-
-    // --- 11. LOGIQUE OKR ---
-    function generateProgressBar(current, target) {
-      const pct = Math.min(100, Math.max(0, Math.round((current / target) * 100))) || 0;
-      const totalChars = 15;
-      const filledChars = Math.round((pct / 100) * totalChars);
-      const emptyChars = totalChars - filledChars;
-      return '█'.repeat(filledChars) + '░'.repeat(emptyChars) + ` ${pct}%`;
-    }
-    function addOkr() {
-      data.okrs.push({ id: Date.now(), title: "Nouvel Objectif", kpi: "Indicateur", current: 0, target: 100 });
-      saveToStorage(); renderOkrs();
-    }
-    function updateOkr(id, key, val) {
-      if (key === 'current' || key === 'target') val = parseFloat(val) || 0;
-      data.okrs.find(x => x.id === id)[key] = val; saveToStorage(); renderOkrs();
-    }
-    function deleteOkr(id) {
-      data.okrs = data.okrs.filter(x => x.id !== id); saveToStorage(); renderOkrs();
-    }
-    function renderOkrs() {
-      const el = document.getElementById('okr-tbody');
-      if (!el) return;
-      el.innerHTML = data.okrs.map(o => `
-        <tr class="hover:bg-white/[0.02] transition">
-          <td class="p-4 font-bold text-white" contenteditable="true" onblur="updateOkr(${o.id}, 'title', this.innerText)">${o.title}</td>
-          <td class="p-4 text-slate-300" contenteditable="true" onblur="updateOkr(${o.id}, 'kpi', this.innerText)">${o.kpi}</td>
-          <td class="p-4 text-center font-mono text-cyan-400" contenteditable="true" onblur="updateOkr(${o.id}, 'current', this.innerText)">${o.current}</td>
-          <td class="p-4 text-center font-mono text-slate-300" contenteditable="true" onblur="updateOkr(${o.id}, 'target', this.innerText)">${o.target}</td>
-          <td class="p-4 text-center font-mono text-emerald-400 text-xs">${generateProgressBar(o.current, o.target)}</td>
-          <td class="p-4 text-right"><button onclick="deleteOkr(${o.id})" class="text-slate-500 hover:text-red-400">✕</button></td>
-        </tr>
-      `).join('');
-    }
-
-    // --- 12. LOGIQUE REVIEWS ---
+    // --- LOGIQUE BILANS PÉRIODIQUES ---
     function addWeeklyReview() {
-      data.weeklyReviews.push({ id: Date.now(), date: getTodayStr(), wins: "", blockers: "", action: "" });
+      data.weeklyReviews.push({ id: Date.now(), date: getTodayStr(), wins: "1. \n2. \n3. ", blockers: "Points de blocage...", action: "Action corrective..." });
       saveToStorage(); renderReviews();
     }
     function updateWeeklyReview(id, key, val) {
-      data.weeklyReviews.find(x => x.id === id)[key] = val; saveToStorage();
+      const r = data.weeklyReviews.find(x => x.id === id);
+      if (r) r[key] = val;
+      saveToStorage();
     }
     function deleteWeeklyReview(id) {
-      data.weeklyReviews = data.weeklyReviews.filter(x => x.id !== id); saveToStorage(); renderReviews();
+      data.weeklyReviews = data.weeklyReviews.filter(x => x.id !== id);
+      saveToStorage(); renderReviews();
     }
 
     function addMonthlyReview() {
-      data.monthlyReviews.push({ id: Date.now(), date: getTodayStr(), rating: 8, summary: "", focusNext: "" });
+      data.monthlyReviews.push({ id: Date.now(), date: getTodayStr(), score: 8, priorities: "Priorités mois suivant...", notes: "Remarques globales..." });
       saveToStorage(); renderReviews();
     }
     function updateMonthlyReview(id, key, val) {
-      if (key === 'rating') val = parseInt(val) || 0;
-      data.monthlyReviews.find(x => x.id === id)[key] = val; saveToStorage();
+      if (key === 'score') val = parseInt(val) || 0;
+      const r = data.monthlyReviews.find(x => x.id === id);
+      if (r) r[key] = val;
+      saveToStorage();
     }
     function deleteMonthlyReview(id) {
-      data.monthlyReviews = data.monthlyReviews.filter(x => x.id !== id); saveToStorage(); renderReviews();
+      data.monthlyReviews = data.monthlyReviews.filter(x => x.id !== id);
+      saveToStorage(); renderReviews();
     }
 
     function renderReviews() {
-      const weeklyEl = document.getElementById('weekly-reviews-list');
-      if (weeklyEl) {
-        weeklyEl.innerHTML = data.weeklyReviews.map(w => `
-          <div class="glass-card p-5 rounded-2xl relative group">
-            <button onclick="deleteWeeklyReview(${w.id})" class="absolute top-3 right-3 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition">✕</button>
-            <div class="text-xs text-slate-400 mb-2 font-mono">${w.date}</div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div>
-                <span class="text-xs font-semibold text-emerald-400">🏆 3 Victoires :</span>
-                <p contenteditable="true" onblur="updateWeeklyReview(${w.id}, 'wins', this.innerText)" class="mt-1 text-slate-200 outline-none min-h-[40px] bg-white/5 p-2 rounded-lg">${w.wins || 'Écrivez ici...'}</p>
+      const wList = document.getElementById('weekly-reviews-list');
+      if (wList) {
+        if (data.weeklyReviews.length === 0) {
+          wList.innerHTML = '<div class="glass-card p-5 rounded-2xl text-center text-slate-500 text-xs sm:text-sm">Aucun bilan hebdomadaire créé.</div>';
+        } else {
+          wList.innerHTML = data.weeklyReviews.map(r => `
+            <div class="glass-card p-4 sm:p-5 rounded-2xl relative space-y-3">
+              <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                <input type="date" value="${r.date}" onchange="updateWeeklyReview(${r.id}, 'date', this.value)" class="bg-transparent text-amber-400 font-bold outline-none text-xs sm:text-sm">
+                <button onclick="deleteWeeklyReview(${r.id})" class="text-slate-500 hover:text-red-400 text-xs p-1">✕ Supprimer</button>
               </div>
-              <div>
-                <span class="text-xs font-semibold text-rose-400">🚧 Blocages :</span>
-                <p contenteditable="true" onblur="updateWeeklyReview(${w.id}, 'blockers', this.innerText)" class="mt-1 text-slate-200 outline-none min-h-[40px] bg-white/5 p-2 rounded-lg">${w.blockers || 'Écrivez ici...'}</p>
-              </div>
-              <div>
-                <span class="text-xs font-semibold text-amber-400">🎯 Action Corrective :</span>
-                <p contenteditable="true" onblur="updateWeeklyReview(${w.id}, 'action', this.innerText)" class="mt-1 text-slate-200 outline-none min-h-[40px] bg-white/5 p-2 rounded-lg">${w.action || 'Écrivez ici...'}</p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">🏆 3 Victoires</label>
+                  <div contenteditable="true" onblur="updateWeeklyReview(${r.id}, 'wins', this.innerText)" class="bg-white/5 border border-white/10 rounded-xl p-2.5 text-slate-200 outline-none whitespace-pre-wrap min-h-[60px]">${r.wins}</div>
+                </div>
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">🚧 Blocages</label>
+                  <div contenteditable="true" onblur="updateWeeklyReview(${r.id}, 'blockers', this.innerText)" class="bg-white/5 border border-white/10 rounded-xl p-2.5 text-slate-200 outline-none whitespace-pre-wrap min-h-[60px]">${r.blockers}</div>
+                </div>
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">🎯 Action Corrective</label>
+                  <div contenteditable="true" onblur="updateWeeklyReview(${r.id}, 'action', this.innerText)" class="bg-white/5 border border-white/10 rounded-xl p-2.5 text-slate-200 outline-none whitespace-pre-wrap min-h-[60px]">${r.action}</div>
+                </div>
               </div>
             </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
 
-      const monthlyEl = document.getElementById('monthly-reviews-list');
-      if (monthlyEl) {
-        monthlyEl.innerHTML = data.monthlyReviews.map(m => `
-          <div class="glass-card p-5 rounded-2xl relative group">
-            <button onclick="deleteMonthlyReview(${m.id})" class="absolute top-3 right-3 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition">✕</button>
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs text-slate-400 font-mono">${m.date}</span>
-              <div class="flex items-center gap-2">
-                <span class="text-xs text-slate-400">Satisfaction :</span>
-                <input type="number" min="1" max="10" value="${m.rating}" onchange="updateMonthlyReview(${m.id}, 'rating', this.value)" class="w-12 bg-white/5 border border-white/10 text-center font-bold text-indigo-400 rounded px-1 text-sm outline-none">
-                <span class="text-xs text-slate-400">/10</span>
+      const mList = document.getElementById('monthly-reviews-list');
+      if (mList) {
+        if (data.monthlyReviews.length === 0) {
+          mList.innerHTML = '<div class="glass-card p-5 rounded-2xl text-center text-slate-500 text-xs sm:text-sm">Aucun bilan mensuel créé.</div>';
+        } else {
+          mList.innerHTML = data.monthlyReviews.map(r => `
+            <div class="glass-card p-4 sm:p-5 rounded-2xl relative space-y-3">
+              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b border-white/10 pb-2">
+                <input type="date" value="${r.date}" onchange="updateMonthlyReview(${r.id}, 'date', this.value)" class="bg-transparent text-indigo-400 font-bold outline-none text-xs sm:text-sm">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-slate-400">Satisfaction :</span>
+                  <input type="number" min="1" max="10" value="${r.score}" onchange="updateMonthlyReview(${r.id}, 'score', this.value)" class="w-10 bg-white/5 border border-white/10 rounded text-center text-white font-bold text-xs py-0.5">
+                  <span class="text-xs text-slate-400">/ 10</span>
+                  <button onclick="deleteMonthlyReview(${r.id})" class="text-slate-500 hover:text-red-400 text-xs ml-2 p-1">✕</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">🎯 Priorités</label>
+                  <div contenteditable="true" onblur="updateMonthlyReview(${r.id}, 'priorities', this.innerText)" class="bg-white/5 border border-white/10 rounded-xl p-2.5 text-slate-200 outline-none whitespace-pre-wrap min-h-[60px]">${r.priorities}</div>
+                </div>
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">📝 Bilan & Remarques</label>
+                  <div contenteditable="true" onblur="updateMonthlyReview(${r.id}, 'notes', this.innerText)" class="bg-white/5 border border-white/10 rounded-xl p-2.5 text-slate-200 outline-none whitespace-pre-wrap min-h-[60px]">${r.notes}</div>
+                </div>
               </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <span class="text-xs font-semibold text-indigo-400">📊 Bilan du mois :</span>
-                <p contenteditable="true" onblur="updateMonthlyReview(${m.id}, 'summary', this.innerText)" class="mt-1 text-slate-200 outline-none min-h-[50px] bg-white/5 p-2 rounded-lg">${m.summary || 'Résumez le mois...'}</p>
-              </div>
-              <div>
-                <span class="text-xs font-semibold text-cyan-400">🚀 Priorités mois suivant :</span>
-                <p contenteditable="true" onblur="updateMonthlyReview(${m.id}, 'focusNext', this.innerText)" class="mt-1 text-slate-200 outline-none min-h-[50px] bg-white/5 p-2 rounded-lg">${m.focusNext || 'Principaux axes...'}</p>
-              </div>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
     }
 
-    // --- INITIALISATION GLOBAL ---
-    window.onload = function() {
+    // --- INITIALISATION COMPLÈTE ---
+    window.addEventListener('DOMContentLoaded', () => {
       checkNewDay();
       renderStats();
       renderHabits();
@@ -2159,13 +2281,13 @@
       renderFinances();
       renderBooks();
       renderFocus();
-      renderTodolist();
       renderReminders();
       renderOkrs();
+      renderTodos();
       renderReviews();
-      switchView('dashboard');
-    };
+      applyCoverImage();
+      applyLanguage();
+    });
   </script>
 </body>
-
 </html>
