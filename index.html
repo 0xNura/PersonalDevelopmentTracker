@@ -132,7 +132,7 @@
           <div id="page-icon" contenteditable="true" onblur="saveGlobalData()"
             class="text-7xl mb-3 cursor-pointer inline-block leading-none">🧠</div>
           <h1 id="page-title" contenteditable="true" onblur="saveGlobalData()"
-            class="text-4xl font-bold text-white tracking-tight outline-none mb-2">Mon Life OS</h1>
+            class="text-4xl font-bold text-white tracking-tight outline-none mb-2">Personal Development</h1>
         </div>
 
         <!-- BARRE D'OUTILS ET PARAMÈTRES -->
@@ -1000,7 +1000,7 @@
 
     // --- 1. INITIALISATION DES DONNÉES ---
     let data = JSON.parse(localStorage.getItem('notion_glass_os')) || {
-      title: "Mon Life OS",
+      title: "Personal Development",
       icon: "🧠",
       coverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop",
       lang: "fr",
@@ -1149,7 +1149,7 @@
     }
 
     function renderStats() {
-      document.getElementById('page-title').innerText = data.title || "Mon Life OS";
+      document.getElementById('page-title').innerText = data.title || "Personal Development";
       document.getElementById('page-icon').innerText = data.icon || "🧠";
 
       const today = getTodayStr();
