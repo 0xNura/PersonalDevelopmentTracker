@@ -627,7 +627,19 @@
           </div>
         </div>
       </section>
-
+      
+      <!-- RÉPARTITION DES REVENUS (NOUVEAU WIDGET) -->
+      <section>
+        <h3 class="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-chart-pie text-emerald-400"></i> <span data-i18n="incomeBreakdown">Répartition des Revenus</span>
+        </h3>
+        <div class="glass-card p-4 sm:p-6 rounded-2xl mb-6 flex justify-center items-center">
+          <div class="relative w-full max-w-lg h-56 sm:h-64">
+            <canvas id="financeIncomePieChart"></canvas>
+          </div>
+        </div>
+      </section>
+      
       <section>
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-lg sm:text-xl font-bold text-white" data-i18n="transactions">Transactions</h2>
@@ -1677,15 +1689,23 @@
 
     function renderFinances() {
       let total = 0;
-      const categoryTotals = {};
-      financeCategories.forEach(cat => categoryTotals[cat] = 0);
+      const categoryTotals = {}; // Pour les dépenses
+      const incomeTotals = {};   // NOUVEAU : Pour les revenus
+      financeCategories.forEach(cat => {
+        categoryTotals[cat] = 0;
+        incomeTotals[cat] = 0;
+      });
 
       const sorted = [...data.finances].sort((a, b) => new Date(b.date) - new Date(a.date));
       document.getElementById('finances-tbody').innerHTML = sorted.map(f => {
         total += f.amount;
         const cat = f.category || "Autre";
+        
+        // Séparation des montants : dépenses vs revenus
         if (f.amount < 0) {
           categoryTotals[cat] = (categoryTotals[cat] || 0) + Math.abs(f.amount);
+        } else if (f.amount > 0) {
+          incomeTotals[cat] = (incomeTotals[cat] || 0) + f.amount;
         }
 
         const catOptions = financeCategories.map(c => `<option value="${c}" ${c === cat ? 'selected' : ''}>${c}</option>`).join('');
@@ -1771,7 +1791,71 @@
         });
       }
     }
+    // --- GRAPHIQUE DES REVENUS (NOUVEAU WIDGET) ---
+      const incomePieCanvas = document.getElementById('financeIncomePieChart');
+      if (incomePieCanvas) {
+        const labelsInc = [];
+        const dataValuesInc = [];
+        // Couleurs optimisées pour les revenus (nuances de vert, bleu, doré)
+        const backgroundColorsInc = ['#10b981', '#3b82f6', '#f59e0b', '#06b6d4', '#14b8a6', '#8b5cf6', '#a855f7', '#6366f1', '#64748b'];
 
+        financeCategories.forEach((c) => {
+          const amount = incomeTotals[c] || 0;
+          if (amount > 0) {
+            labelsInc.push(c);
+            dataValuesInc.push(amount);
+          }
+        });
+
+        if (window.financeIncomeChartInstance) {
+          window.financeIncomeChartInstance.destroy();
+        }
+
+        window.financeIncomeChartInstance = new Chart(incomePieCanvas, {
+          type: 'pie',
+          data: {
+            labels: labelsInc.length > 0 ? labelsInc : ['Aucun revenu'],
+            datasets: [{
+              data: dataValuesInc.length > 0 ? dataValuesInc : [1],
+              backgroundColor: dataValuesInc.length > 0 ? backgroundColorsInc.slice(0, labelsInc.length) : ['#1e293b'],
+              borderColor: '#121212',
+              borderWidth: 2,
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: window.innerWidth < 640 ? 'bottom' : 'right',
+                labels: { 
+                  color: '#e1e1e1', 
+                  font: { family: 'Inter', size: 11 },
+                  padding: 12
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleFont: { size: 12, family: 'Inter' },
+                bodyFont: { size: 12, family: 'Inter' },
+                padding: 10,
+                cornerRadius: 8,
+                callbacks: {
+                  label: function(context) {
+                    let label = context.label || '';
+                    if (label !== 'Aucun revenu') {
+                      return ' ' + label + ' : +' + context.parsed.toFixed(2) + ' €';
+                    }
+                    return ' ' + label;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    
     // --- LOGIQUE LIVRES ---
     function addBook() {
       data.books.push({
